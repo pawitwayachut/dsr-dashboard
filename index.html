@@ -10,13 +10,15 @@
         h1 { font-size: 2rem; color: #38bdf8; }
         p { color: #94a3b8; font-size: 1.1rem; }
         .badge { background: #22c55e; color: #fff; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; }
+        .timestamp { color: #64748b; font-size: 0.85rem; margin-top: 2rem; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>OPR Daily Sales Report</h1>
-        <p>Dashboard deployment test — <span class="badge">Connected</span></p>
-        <p style="margin-top:2rem;color:#64748b;">Supersports Operations &bull; Auto-deployed via GitHub → Cloudflare Pages</p>
+        <p>Pipeline verified — <span class="badge">Auto-deploy Active</span></p>
+        <p class="timestamp">Supersports Operations &bull; GitHub → Cloudflare Pages pipeline confirmed</p>
+        <p class="timestamp">Last updated: $(date -u '+%Y-%m-%d %H:%M UTC')</p>
     </div>
 </body>
 </html>
