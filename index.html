@@ -88,6 +88,10 @@
   .cell-pos{background:#e6f4ea;color:#0a8a3e} .cell-neg{background:#fce8e8;color:#d41920}
   .highlight-yellow{background:#fff3cd;color:#856404}
 
+  /* Daily Sales Tracking — all columns center-aligned */
+  .daily-table th,.daily-table td{text-align:center}
+  .daily-table td.num{text-align:center}
+
   .badge{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.3px}
   .badge.bkk{background:#fce8e8;color:#F90507}
   .badge.upc{background:#e0e8f5;color:#002060}
@@ -110,7 +114,7 @@
   <div class="header-right">
     <div class="meta">
       <div>Data as of <strong>Apr 8, 2026</strong></div>
-      <div>Generated 09 Apr 2026 01:12</div>
+      <div>Generated 09 Apr 2026 01:16</div>
     </div>
     <div class="logo-supersports">SUPERSPORTS</div>
   </div>
@@ -173,7 +177,7 @@
   <div class="card" style="margin-bottom:20px">
     <div class="section-title">Daily Sales Tracking (SSP — M฿)</div>
     <div class="table-wrap" style="max-height:520px;overflow-y:auto">
-      <table>
+      <table class="daily-table">
         <thead><tr>
           <th>2025</th><th class="num">Net Sales</th>
           <th>2026</th><th class="num">Daily Target</th>
