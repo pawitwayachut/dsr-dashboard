@@ -9,15 +9,10 @@
   body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f5f5;color:#1a1a1a;font-size:13px}
   .header{background:#ffffff;border-bottom:3px solid #F90507;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
   .header-left{display:flex;align-items:center;gap:16px}
-  .header-logo{display:flex;flex-direction:column;align-items:flex-start}
-  .header-logo .brand-crc{font-size:22px;font-weight:900;color:#F90507;letter-spacing:2px;line-height:1}
-  .header-logo .brand-sports{font-size:11px;font-weight:700;color:#F90507;letter-spacing:4px;text-transform:uppercase}
-  .header h1{font-size:18px;font-weight:700;color:#002060;border-left:2px solid #D9D9D9;padding-left:16px}
+  .header-logo .header-logo .header h1{font-size:18px;font-weight:700;color:#002060;border-left:2px solid #D9D9D9;padding-left:16px}
   .header .meta{color:#5F615E;font-size:12px;text-align:right;line-height:1.7}
   .header .meta strong{color:#002060}
   .header-right{display:flex;align-items:center;gap:20px}
-  .logo-supersports{font-size:13px;font-weight:700;color:#002060;letter-spacing:1px;text-transform:uppercase}
-
   .kpi-bar{display:flex;gap:1px;background:#e7e6e6}
   .kpi-card{flex:1;background:#ffffff;padding:12px 16px;border-bottom:3px solid transparent}
   .kpi-card.daily{border-color:#F90507}
@@ -66,7 +61,7 @@
   td.store-name{font-weight:500;color:#1a1a1a}
   .pos{color:#0a8a3e} .neg{color:#d41920} .neutral{color:#5F615E}
 
-  /* DM subtotal rows — distinct style */
+  /* DM subtotal rows â distinct style */
   tr.dm-row td{background:#e8ecf4;font-weight:700;color:#002060;border-top:1px solid #b0c4de;border-bottom:2px solid #b0c4de;font-size:12px}
   tr.dm-row:hover td{background:#dce3f0}
   tr.region-total-row td{background:#ccd9ef;font-weight:700;color:#002060;border-top:2px solid #002060;border-bottom:3px solid #002060;font-size:13px}
@@ -88,7 +83,7 @@
   .cell-pos{background:#e6f4ea;color:#0a8a3e} .cell-neg{background:#fce8e8;color:#d41920}
   .highlight-yellow{background:#fff3cd;color:#856404}
 
-  /* Daily Sales Tracking — all columns center-aligned */
+  /* Daily Sales Tracking â all columns center-aligned */
   .daily-table th,.daily-table td{text-align:center}
   .daily-table td.num{text-align:center}
 
@@ -108,7 +103,6 @@
 
 <div class="header">
   <div class="header-left">
-    <div class="header-logo"><span class="brand-crc">CRC</span><span class="brand-sports">SPORTS</span></div>
     <h1>OPR Daily Sales Report</h1>
   </div>
   <div class="header-right">
@@ -116,7 +110,6 @@
       <div>Data as of <strong>Apr 8, 2026</strong></div>
       <div>Generated 09 Apr 2026 03:00</div>
     </div>
-    <div class="logo-supersports">SUPERSPORTS</div>
   </div>
 </div>
 
@@ -125,32 +118,32 @@
   <div class="kpi-card daily">
     <div class="kpi-label">Daily (SSP)</div>
     <div class="kpi-value">15.1M</div>
-    <div class="kpi-sub">TG 15.0M · Diff <span class="pos">+111K</span> · vs TG <span class="pos">+0.7%</span> · vs LY <span class="neg">-4.9%</span></div>
+    <div class="kpi-sub">TG 15.0M Â· Diff <span class="pos">+111K</span> Â· vs TG <span class="pos">+0.7%</span> Â· vs LY <span class="neg">-4.9%</span></div>
   </div>
   <div class="kpi-card mtd">
     <div class="kpi-label">MTD (SSP)</div>
     <div class="kpi-value">158.6M</div>
-    <div class="kpi-sub">TG 159.0M · Diff <span class="neg">-424K</span> · vs TG <span class="neg">-0.3%</span> · vs LY <span class="neg">-0.7%</span></div>
+    <div class="kpi-sub">TG 159.0M Â· Diff <span class="neg">-424K</span> Â· vs TG <span class="neg">-0.3%</span> Â· vs LY <span class="neg">-0.7%</span></div>
   </div>
   <div class="kpi-card forecast">
     <div class="kpi-label">Runrate</div>
     <div class="kpi-value">584.7M</div>
-    <div class="kpi-sub">LY 577.1M · Diff <span class="neg">-315K</span> · vs TG <span class="neg">-0.1%</span> · vs LY <span class="pos">+1.3%</span></div>
+    <div class="kpi-sub">LY 577.1M Â· Diff <span class="neg">-315K</span> Â· vs TG <span class="neg">-0.1%</span> Â· vs LY <span class="pos">+1.3%</span></div>
   </div>
   <div class="kpi-card bkk">
     <div class="kpi-label">BKK MTD</div>
     <div class="kpi-value">69.9M</div>
-    <div class="kpi-sub">LY 71.7M · Diff <span class="neg">-1.8M</span> · vs TG <span class="pos">+0.0%</span> · vs LY <span class="neg">-2.5%</span></div>
+    <div class="kpi-sub">LY 71.7M Â· Diff <span class="neg">-1.8M</span> Â· vs TG <span class="pos">+0.0%</span> Â· vs LY <span class="neg">-2.5%</span></div>
   </div>
   <div class="kpi-card upc">
     <div class="kpi-label">UPC MTD</div>
     <div class="kpi-value">88.7M</div>
-    <div class="kpi-sub">LY 88.0M · Diff <span class="pos">+711K</span> · vs TG <span class="neg">-0.5%</span> · vs LY <span class="pos">+0.8%</span></div>
+    <div class="kpi-sub">LY 88.0M Â· Diff <span class="pos">+711K</span> Â· vs TG <span class="neg">-0.5%</span> Â· vs LY <span class="pos">+0.8%</span></div>
   </div>
   <div class="kpi-card mono">
     <div class="kpi-label">MONO MTD</div>
     <div class="kpi-value">4.5M</div>
-    <div class="kpi-sub">LY 4.0M · Diff <span class="pos">+514K</span> · vs TG(LY) <span class="pos">+12.8%</span> · vs LY <span class="pos">+12.8%</span></div>
+    <div class="kpi-sub">LY 4.0M Â· Diff <span class="pos">+514K</span> Â· vs TG(LY) <span class="pos">+12.8%</span> Â· vs LY <span class="pos">+12.8%</span></div>
   </div>
 </div>
 
@@ -171,11 +164,11 @@
   <button class="tab-btn" onclick="showTab('mono',this)">Mono-Brand Stores</button>
 </div>
 
-<!-- ═══ TAB: SUMMARY ═══ -->
+<!-- âââ TAB: SUMMARY âââ -->
 <div id="tab-summary" class="tab-content active">
 
   <div class="card" style="margin-bottom:20px">
-    <div class="section-title">Daily Sales Tracking (SSP — M฿)</div>
+    <div class="section-title">Daily Sales Tracking (SSP â Mà¸¿)</div>
     <div class="table-wrap" style="max-height:520px;overflow-y:auto">
       <table class="daily-table">
         <thead><tr>
@@ -186,42 +179,42 @@
           <th class="num">%Chg vs LY</th>
           <th>Remark</th>
         </tr></thead>
-        <tbody><tr class="orphan-row"><td>อ., 01/04/2025</td><td class="num">15.58</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr class=""><td>พ., 02/04/2025</td><td class="num">15.81</td><td>พ., 01/04/2026</td><td class="num">15.27</td><td class="num">15.27</td><td class="num">0.00</td><td class="num cell-neg">-3.4%</td><td></td></tr>
-<tr class=""><td>พฤ., 03/04/2025</td><td class="num">16.04</td><td>พฤ., 02/04/2026</td><td class="num">16.47</td><td class="num">16.47</td><td class="num">0.00</td><td class="num cell-pos">+2.7%</td><td></td></tr>
-<tr class=""><td>ศ., 04/04/2025</td><td class="num">18.00</td><td>ศ., 03/04/2026</td><td class="num">17.50</td><td class="num">17.50</td><td class="num">0.00</td><td class="num cell-neg">-2.8%</td><td></td></tr>
-<tr class=""><td>ส., 05/04/2025</td><td class="num">27.10</td><td>ส., 04/04/2026</td><td class="num">27.00</td><td class="num">27.00</td><td class="num">0.00</td><td class="num cell-neg">-0.4%</td><td></td></tr>
-<tr class=""><td>อา., 06/04/2025</td><td class="num">31.66</td><td>อา., 05/04/2026</td><td class="num">30.05</td><td class="num">30.05</td><td class="num">0.00</td><td class="num cell-neg">-5.1%</td><td></td></tr>
-<tr class="week-row"><td>พ., 02/04/2025</td><td class="num"><strong>108.61</strong></td><td><strong>W1</strong></td><td class="num"><strong>106.28</strong></td><td class="num"><strong>106.28</strong></td><td class="num">0.00</td><td class="num cell-neg">-2.1%</td><td></td></tr>
-<tr class=" holiday-row"><td>จ., 07/04/2025</td><td class="num">21.86</td><td>จ., 06/04/2026</td><td class="num">22.75</td><td class="num">22.75</td><td class="num">0.00</td><td class="num cell-pos">+4.1%</td><td><span class="tag-holiday">Chakri</span></td></tr>
-<tr class=""><td>อ., 08/04/2025</td><td class="num">15.42</td><td>อ., 07/04/2026</td><td class="num">15.00</td><td class="num">14.54</td><td class="num cell-neg">-0.46</td><td class="num cell-neg">-5.7%</td><td></td></tr>
-<tr class=""><td>พ., 09/04/2025</td><td class="num">16.08</td><td>พ., 08/04/2026</td><td class="num">15.00</td><td class="num">15.11</td><td class="num cell-pos">0.11</td><td class="num cell-neg">-6.0%</td><td></td></tr>
-<tr class="future-row"><td>พฤ., 10/04/2025</td><td class="num">16.34</td><td>พฤ., 09/04/2026</td><td class="num">16.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>ศ., 11/04/2025</td><td class="num">18.73</td><td>ศ., 10/04/2026</td><td class="num">17.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>ส., 12/04/2025</td><td class="num">25.65</td><td>ส., 11/04/2026</td><td class="num">26.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>อา., 13/04/2025</td><td class="num">21.58</td><td>อา., 12/04/2026</td><td class="num">28.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="week-row"><td>จ., 07/04/2025</td><td class="num"><strong>135.66</strong></td><td><strong>W2</strong></td><td class="num"><strong>139.75</strong></td><td class="num"><strong>52.41</strong></td><td class="num cell-neg">-87.35</td><td class="num cell-neg">-61.4%</td><td></td></tr>
-<tr class="future-row holiday-row"><td>จ., 14/04/2025</td><td class="num">22.10</td><td>จ., 13/04/2026</td><td class="num">21.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td><span class="tag-holiday">Songkran</span></td></tr>
-<tr class="future-row holiday-row"><td>อ., 15/04/2025</td><td class="num">20.81</td><td>อ., 14/04/2026</td><td class="num">21.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td><span class="tag-holiday">Songkran</span></td></tr>
-<tr class="future-row holiday-row"><td>พ., 16/04/2025</td><td class="num">20.28</td><td>พ., 15/04/2026</td><td class="num">21.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td><span class="tag-holiday">Songkran</span></td></tr>
-<tr class="future-row"><td>พฤ., 17/04/2025</td><td class="num">15.24</td><td>พฤ., 16/04/2026</td><td class="num">15.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>ศ., 18/04/2025</td><td class="num">15.89</td><td>ศ., 17/04/2026</td><td class="num">16.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>ส., 19/04/2025</td><td class="num">21.91</td><td>ส., 18/04/2026</td><td class="num">26.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>อา., 20/04/2025</td><td class="num">24.80</td><td>อา., 19/04/2026</td><td class="num">28.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="week-row"><td>จ., 14/04/2025</td><td class="num"><strong>141.03</strong></td><td><strong>W3</strong></td><td class="num"><strong>148.00</strong></td><td class="num"><strong></strong></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>จ., 21/04/2025</td><td class="num">13.85</td><td>จ., 20/04/2026</td><td class="num">14.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>อ., 22/04/2025</td><td class="num">13.63</td><td>อ., 21/04/2026</td><td class="num">14.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>พ., 23/04/2025</td><td class="num">14.37</td><td>พ., 22/04/2026</td><td class="num">14.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>พฤ., 24/04/2025</td><td class="num">14.49</td><td>พฤ., 23/04/2026</td><td class="num">15.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>ศ., 25/04/2025</td><td class="num">16.47</td><td>ศ., 24/04/2026</td><td class="num">16.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>ส., 26/04/2025</td><td class="num">25.97</td><td>ส., 25/04/2026</td><td class="num">26.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>อา., 27/04/2025</td><td class="num">26.88</td><td>อา., 26/04/2026</td><td class="num">28.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="week-row"><td>จ., 21/04/2025</td><td class="num"><strong>125.67</strong></td><td><strong>W4</strong></td><td class="num"><strong>127.00</strong></td><td class="num"><strong></strong></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>จ., 28/04/2025</td><td class="num">14.84</td><td>จ., 27/04/2026</td><td class="num">15.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>อ., 29/04/2025</td><td class="num">18.85</td><td>อ., 28/04/2026</td><td class="num">15.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td>พ., 30/04/2025</td><td class="num">16.89</td><td>พ., 29/04/2026</td><td class="num">16.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="future-row"><td></td><td class="num"></td><td>พฤ., 30/04/2026</td><td class="num">18.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
-<tr class="week-row"><td>จ., 28/04/2025</td><td class="num"><strong>50.57</strong></td><td><strong>W5</strong></td><td class="num"><strong>64.00</strong></td><td class="num"><strong></strong></td><td class="num"></td><td class="num"></td><td></td></tr>
+        <tbody><tr class="orphan-row"><td>à¸­., 01/04/2025</td><td class="num">15.58</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class=""><td>à¸., 02/04/2025</td><td class="num">15.81</td><td>à¸., 01/04/2026</td><td class="num">15.27</td><td class="num">15.27</td><td class="num">0.00</td><td class="num cell-neg">-3.4%</td><td></td></tr>
+<tr class=""><td>à¸à¸¤., 03/04/2025</td><td class="num">16.04</td><td>à¸à¸¤., 02/04/2026</td><td class="num">16.47</td><td class="num">16.47</td><td class="num">0.00</td><td class="num cell-pos">+2.7%</td><td></td></tr>
+<tr class=""><td>à¸¨., 04/04/2025</td><td class="num">18.00</td><td>à¸¨., 03/04/2026</td><td class="num">17.50</td><td class="num">17.50</td><td class="num">0.00</td><td class="num cell-neg">-2.8%</td><td></td></tr>
+<tr class=""><td>à¸ª., 05/04/2025</td><td class="num">27.10</td><td>à¸ª., 04/04/2026</td><td class="num">27.00</td><td class="num">27.00</td><td class="num">0.00</td><td class="num cell-neg">-0.4%</td><td></td></tr>
+<tr class=""><td>à¸­à¸²., 06/04/2025</td><td class="num">31.66</td><td>à¸­à¸²., 05/04/2026</td><td class="num">30.05</td><td class="num">30.05</td><td class="num">0.00</td><td class="num cell-neg">-5.1%</td><td></td></tr>
+<tr class="week-row"><td>à¸., 02/04/2025</td><td class="num"><strong>108.61</strong></td><td><strong>W1</strong></td><td class="num"><strong>106.28</strong></td><td class="num"><strong>106.28</strong></td><td class="num">0.00</td><td class="num cell-neg">-2.1%</td><td></td></tr>
+<tr class=" holiday-row"><td>à¸., 07/04/2025</td><td class="num">21.86</td><td>à¸., 06/04/2026</td><td class="num">22.75</td><td class="num">22.75</td><td class="num">0.00</td><td class="num cell-pos">+4.1%</td><td><span class="tag-holiday">Chakri</span></td></tr>
+<tr class=""><td>à¸­., 08/04/2025</td><td class="num">15.42</td><td>à¸­., 07/04/2026</td><td class="num">15.00</td><td class="num">14.54</td><td class="num cell-neg">-0.46</td><td class="num cell-neg">-5.7%</td><td></td></tr>
+<tr class=""><td>à¸., 09/04/2025</td><td class="num">16.08</td><td>à¸., 08/04/2026</td><td class="num">15.00</td><td class="num">15.11</td><td class="num cell-pos">0.11</td><td class="num cell-neg">-6.0%</td><td></td></tr>
+<tr class="future-row"><td>à¸à¸¤., 10/04/2025</td><td class="num">16.34</td><td>à¸à¸¤., 09/04/2026</td><td class="num">16.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸¨., 11/04/2025</td><td class="num">18.73</td><td>à¸¨., 10/04/2026</td><td class="num">17.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸ª., 12/04/2025</td><td class="num">25.65</td><td>à¸ª., 11/04/2026</td><td class="num">26.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸­à¸²., 13/04/2025</td><td class="num">21.58</td><td>à¸­à¸²., 12/04/2026</td><td class="num">28.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="week-row"><td>à¸., 07/04/2025</td><td class="num"><strong>135.66</strong></td><td><strong>W2</strong></td><td class="num"><strong>139.75</strong></td><td class="num"><strong>52.41</strong></td><td class="num cell-neg">-87.35</td><td class="num cell-neg">-61.4%</td><td></td></tr>
+<tr class="future-row holiday-row"><td>à¸., 14/04/2025</td><td class="num">22.10</td><td>à¸., 13/04/2026</td><td class="num">21.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td><span class="tag-holiday">Songkran</span></td></tr>
+<tr class="future-row holiday-row"><td>à¸­., 15/04/2025</td><td class="num">20.81</td><td>à¸­., 14/04/2026</td><td class="num">21.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td><span class="tag-holiday">Songkran</span></td></tr>
+<tr class="future-row holiday-row"><td>à¸., 16/04/2025</td><td class="num">20.28</td><td>à¸., 15/04/2026</td><td class="num">21.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td><span class="tag-holiday">Songkran</span></td></tr>
+<tr class="future-row"><td>à¸à¸¤., 17/04/2025</td><td class="num">15.24</td><td>à¸à¸¤., 16/04/2026</td><td class="num">15.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸¨., 18/04/2025</td><td class="num">15.89</td><td>à¸¨., 17/04/2026</td><td class="num">16.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸ª., 19/04/2025</td><td class="num">21.91</td><td>à¸ª., 18/04/2026</td><td class="num">26.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸­à¸²., 20/04/2025</td><td class="num">24.80</td><td>à¸­à¸²., 19/04/2026</td><td class="num">28.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="week-row"><td>à¸., 14/04/2025</td><td class="num"><strong>141.03</strong></td><td><strong>W3</strong></td><td class="num"><strong>148.00</strong></td><td class="num"><strong></strong></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸., 21/04/2025</td><td class="num">13.85</td><td>à¸., 20/04/2026</td><td class="num">14.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸­., 22/04/2025</td><td class="num">13.63</td><td>à¸­., 21/04/2026</td><td class="num">14.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸., 23/04/2025</td><td class="num">14.37</td><td>à¸., 22/04/2026</td><td class="num">14.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸à¸¤., 24/04/2025</td><td class="num">14.49</td><td>à¸à¸¤., 23/04/2026</td><td class="num">15.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸¨., 25/04/2025</td><td class="num">16.47</td><td>à¸¨., 24/04/2026</td><td class="num">16.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸ª., 26/04/2025</td><td class="num">25.97</td><td>à¸ª., 25/04/2026</td><td class="num">26.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸­à¸²., 27/04/2025</td><td class="num">26.88</td><td>à¸­à¸²., 26/04/2026</td><td class="num">28.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="week-row"><td>à¸., 21/04/2025</td><td class="num"><strong>125.67</strong></td><td><strong>W4</strong></td><td class="num"><strong>127.00</strong></td><td class="num"><strong></strong></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸., 28/04/2025</td><td class="num">14.84</td><td>à¸., 27/04/2026</td><td class="num">15.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸­., 29/04/2025</td><td class="num">18.85</td><td>à¸­., 28/04/2026</td><td class="num">15.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td>à¸., 30/04/2025</td><td class="num">16.89</td><td>à¸., 29/04/2026</td><td class="num">16.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="future-row"><td></td><td class="num"></td><td>à¸à¸¤., 30/04/2026</td><td class="num">18.00</td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>
+<tr class="week-row"><td>à¸., 28/04/2025</td><td class="num"><strong>50.57</strong></td><td><strong>W5</strong></td><td class="num"><strong>64.00</strong></td><td class="num"><strong></strong></td><td class="num"></td><td class="num"></td><td></td></tr>
 <tr class="summary-row"><td><strong>MTD Sales</strong></td><td class="num"><strong>161.97</strong></td><td></td><td><strong>Sales Landing</strong></td><td class="num"><strong>158.61</strong></td><td></td><td class="num cell-neg">-2.1%</td><td></td></tr>
 <tr class="summary-row forecast-row"><td><strong>Y25 Sales</strong></td><td class="num"><strong>577.12</strong></td><td></td><td><strong>Forecast Landing</strong></td><td class="num highlight-yellow"><strong>585.04</strong></td><td></td><td class="num cell-pos">+1.4%</td><td></td></tr></tbody>
       </table>
@@ -230,7 +223,7 @@
 
 </div>
 
-<!-- ═══ TAB: SUPERSPORTS STORES ═══ -->
+<!-- âââ TAB: SUPERSPORTS STORES âââ -->
 <div id="tab-ssp" class="tab-content">
   <div class="filter-bar"><button class="filter-btn active" onclick="filterSSP('ALL',this)">All</button>
 <button class="filter-btn" onclick="filterSSP('BKK',this)">BKK</button>
@@ -343,7 +336,7 @@
 <tr data-region="UPC" data-dm="Wichit Shoothong"><td class="code">F6</td><td class="store-name">Outlet Phuket Thalang</td><td><span class="badge upc">UPC</span></td><td class="num">16K</td><td class="num">26K</td><td class="num"><span class="neg">-39.2%</span></td><td class="num">242K</td><td class="num">294K</td><td class="num"><span class="neg">-17.7%</span></td><td class="num">1.0M</td><td class="num"><span class="pos">+23.2%</span></td></tr>
 <tr class="dm-row" data-region="UPC" data-dm="Wichit Shoothong"><td colspan="2"><strong>Wichit Shoothong</strong></td><td><span class="badge upc">UPC</span></td><td class="num"><strong>1.7M</strong></td><td class="num">1.7M</td><td class="num"><span class="neg">-1.5%</span></td><td class="num"><strong>16.3M</strong></td><td class="num">16.8M</td><td class="num"><span class="neg">-2.8%</span></td><td class="num">67.5M</td><td class="num"><span class="pos">+24.2%</span></td></tr>
 <tr data-region="UPC" data-dm="Nonthachai Yongrach"><td class="code">H4</td><td class="store-name">Hadyai Festival</td><td><span class="badge upc">UPC</span></td><td class="num">422K</td><td class="num">405K</td><td class="num"><span class="pos">+4.3%</span></td><td class="num">4.8M</td><td class="num">4.4M</td><td class="num"><span class="pos">+9.5%</span></td><td class="num">17.7M</td><td class="num"><span class="pos">+27.4%</span></td></tr>
-<tr data-region="UPC" data-dm="Nonthachai Yongrach"><td class="code">KR</td><td class="store-name">CPN Krabi</td><td><span class="badge upc">UPC</span></td><td class="num">278K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">2.0M</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">7.4M</td><td class="num"><span class="pos">+27.0%</span></td></tr>
+<tr data-region="UPC" data-dm="Nonthachai Yongrach"><td class="code">KR</td><td class="store-name">CPN Krabi</td><td><span class="badge upc">UPC</span></td><td class="num">278K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td><td class="num">2.0M</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td><td class="num">7.4M</td><td class="num"><span class="pos">+27.0%</span></td></tr>
 <tr data-region="UPC" data-dm="Nonthachai Yongrach"><td class="code">TR</td><td class="store-name">Trang-R</td><td><span class="badge upc">UPC</span></td><td class="num">67K</td><td class="num">135K</td><td class="num"><span class="neg">-50.6%</span></td><td class="num">1.1M</td><td class="num">1.2M</td><td class="num"><span class="neg">-2.7%</span></td><td class="num">3.9M</td><td class="num"><span class="pos">+29.5%</span></td></tr>
 <tr data-region="UPC" data-dm="Nonthachai Yongrach"><td class="code">HI</td><td class="store-name">Had Yai-R</td><td><span class="badge upc">UPC</span></td><td class="num">62K</td><td class="num">123K</td><td class="num"><span class="neg">-49.7%</span></td><td class="num">704K</td><td class="num">960K</td><td class="num"><span class="neg">-26.6%</span></td><td class="num">2.6M</td><td class="num"><span class="pos">+27.2%</span></td></tr>
 <tr class="dm-row" data-region="UPC" data-dm="Nonthachai Yongrach"><td colspan="2"><strong>Nonthachai Yongrach</strong></td><td><span class="badge upc">UPC</span></td><td class="num"><strong>829K</strong></td><td class="num">664K</td><td class="num"><span class="pos">+24.9%</span></td><td class="num"><strong>8.7M</strong></td><td class="num">6.5M</td><td class="num"><span class="pos">+32.6%</span></td><td class="num">31.5M</td><td class="num"><span class="pos">+27.5%</span></td></tr>
@@ -357,7 +350,7 @@
   </div>
 </div>
 
-<!-- ═══ TAB: MONO-BRAND STORES ═══ -->
+<!-- âââ TAB: MONO-BRAND STORES âââ -->
 <div id="tab-mono" class="tab-content">
   <div class="filter-bar"><button class="filter-btn active" onclick="filterMono('ALL',this)">All Brands</button>
 <button class="filter-btn" onclick="filterMono('Columbia',this)">Columbia</button>
@@ -372,28 +365,28 @@
         <th class="num">Daily TY</th><th class="num">Daily LY</th><th class="num">Daily %</th>
         <th class="num">MTD TY</th><th class="num">MTD LY</th><th class="num">MTD %</th>
       </tr></thead>
-      <tbody id="mono-body"><tr data-brand="Reebok"><td class="code">—</td><td class="store-name">Reebok Central Village</td><td><span class="badge mono-b">Reebok</span></td><td class="num">8K</td><td class="num">6K</td><td class="num"><span class="pos">+27.3%</span></td><td class="num">145K</td><td class="num">98K</td><td class="num"><span class="pos">+48.0%</span></td></tr>
+      <tbody id="mono-body"><tr data-brand="Reebok"><td class="code">â</td><td class="store-name">Reebok Central Village</td><td><span class="badge mono-b">Reebok</span></td><td class="num">8K</td><td class="num">6K</td><td class="num"><span class="pos">+27.3%</span></td><td class="num">145K</td><td class="num">98K</td><td class="num"><span class="pos">+48.0%</span></td></tr>
 <tr class="brand-total" data-brand="Reebok"><td colspan="2"><strong>Reebok Total</strong></td><td></td><td class="num"><strong>8K</strong></td><td class="num">6K</td><td class="num"><span class="pos">+27.3%</span></td><td class="num"><strong>145K</strong></td><td class="num">98K</td><td class="num"><span class="pos">+48.0%</span></td></tr>
-<tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool CPN Westgate</td><td><span class="badge mono-b">LFC</span></td><td class="num">8K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">291K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td></tr>
-<tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool FC Pattaya Beach</td><td><span class="badge mono-b">LFC</span></td><td class="num">38K</td><td class="num">27K</td><td class="num"><span class="pos">+40.9%</span></td><td class="num">310K</td><td class="num">318K</td><td class="num"><span class="neg">-2.5%</span></td></tr>
-<tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool Central Festival Chiangmai</td><td><span class="badge mono-b">LFC</span></td><td class="num">25K</td><td class="num">35K</td><td class="num"><span class="neg">-29.0%</span></td><td class="num">271K</td><td class="num">377K</td><td class="num"><span class="neg">-28.1%</span></td></tr>
-<tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool Central Festival Phuket</td><td><span class="badge mono-b">LFC</span></td><td class="num">65K</td><td class="num">46K</td><td class="num"><span class="pos">+40.7%</span></td><td class="num">369K</td><td class="num">343K</td><td class="num"><span class="pos">+7.5%</span></td></tr>
-<tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool Rama9</td><td><span class="badge mono-b">LFC</span></td><td class="num">59K</td><td class="num">80K</td><td class="num"><span class="neg">-26.4%</span></td><td class="num">643K</td><td class="num">793K</td><td class="num"><span class="neg">-18.9%</span></td></tr>
+<tr data-brand="LFC"><td class="code">â</td><td class="store-name">Liverpool CPN Westgate</td><td><span class="badge mono-b">LFC</span></td><td class="num">8K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td><td class="num">291K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td></tr>
+<tr data-brand="LFC"><td class="code">â</td><td class="store-name">Liverpool FC Pattaya Beach</td><td><span class="badge mono-b">LFC</span></td><td class="num">38K</td><td class="num">27K</td><td class="num"><span class="pos">+40.9%</span></td><td class="num">310K</td><td class="num">318K</td><td class="num"><span class="neg">-2.5%</span></td></tr>
+<tr data-brand="LFC"><td class="code">â</td><td class="store-name">Liverpool Central Festival Chiangmai</td><td><span class="badge mono-b">LFC</span></td><td class="num">25K</td><td class="num">35K</td><td class="num"><span class="neg">-29.0%</span></td><td class="num">271K</td><td class="num">377K</td><td class="num"><span class="neg">-28.1%</span></td></tr>
+<tr data-brand="LFC"><td class="code">â</td><td class="store-name">Liverpool Central Festival Phuket</td><td><span class="badge mono-b">LFC</span></td><td class="num">65K</td><td class="num">46K</td><td class="num"><span class="pos">+40.7%</span></td><td class="num">369K</td><td class="num">343K</td><td class="num"><span class="pos">+7.5%</span></td></tr>
+<tr data-brand="LFC"><td class="code">â</td><td class="store-name">Liverpool Rama9</td><td><span class="badge mono-b">LFC</span></td><td class="num">59K</td><td class="num">80K</td><td class="num"><span class="neg">-26.4%</span></td><td class="num">643K</td><td class="num">793K</td><td class="num"><span class="neg">-18.9%</span></td></tr>
 <tr class="brand-total" data-brand="LFC"><td colspan="2"><strong>LFC Total</strong></td><td></td><td class="num"><strong>194K</strong></td><td class="num">188K</td><td class="num"><span class="pos">+3.3%</span></td><td class="num"><strong>1.9M</strong></td><td class="num">1.8M</td><td class="num"><span class="pos">+2.9%</span></td></tr>
-<tr data-brand="Speedo"><td class="code">—</td><td class="store-name">Speedo Terminal 21 Pattaya </td><td><span class="badge mono-b">Speedo</span></td><td class="num">27K</td><td class="num">4K</td><td class="num"><span class="pos">+551.3%</span></td><td class="num">238K</td><td class="num">92K</td><td class="num"><span class="pos">+159.4%</span></td></tr>
+<tr data-brand="Speedo"><td class="code">â</td><td class="store-name">Speedo Terminal 21 Pattaya </td><td><span class="badge mono-b">Speedo</span></td><td class="num">27K</td><td class="num">4K</td><td class="num"><span class="pos">+551.3%</span></td><td class="num">238K</td><td class="num">92K</td><td class="num"><span class="pos">+159.4%</span></td></tr>
 <tr class="brand-total" data-brand="Speedo"><td colspan="2"><strong>Speedo Total</strong></td><td></td><td class="num"><strong>27K</strong></td><td class="num">4K</td><td class="num"><span class="pos">+551.3%</span></td><td class="num"><strong>238K</strong></td><td class="num">92K</td><td class="num"><span class="pos">+159.4%</span></td></tr>
-<tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia Central Festival Chiangmai</td><td><span class="badge mono-b">Columbia</span></td><td class="num">15K</td><td class="num">5K</td><td class="num"><span class="pos">+211.4%</span></td><td class="num">146K</td><td class="num">58K</td><td class="num"><span class="pos">+152.4%</span></td></tr>
-<tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia Central Festival Phuket</td><td><span class="badge mono-b">Columbia</span></td><td class="num">29K</td><td class="num">30K</td><td class="num"><span class="neg">-6.3%</span></td><td class="num">275K</td><td class="num">234K</td><td class="num"><span class="pos">+17.8%</span></td></tr>
-<tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia Central World</td><td><span class="badge mono-b">Columbia</span></td><td class="num">12K</td><td class="num">65K</td><td class="num"><span class="neg">-81.5%</span></td><td class="num">400K</td><td class="num">522K</td><td class="num"><span class="neg">-23.4%</span></td></tr>
-<tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia Central Park Bangkok</td><td><span class="badge mono-b">Columbia</span></td><td class="num">1K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">75K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td></tr>
-<tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia Central Pattaya Beach</td><td><span class="badge mono-b">Columbia</span></td><td class="num">13K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">152K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td></tr>
-<tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia CPN West Gate</td><td><span class="badge mono-b">Columbia</span></td><td class="num">4K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">139K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td></tr>
-<tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia CPN Ladprao</td><td><span class="badge mono-b">Columbia</span></td><td class="num">45K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">404K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td></tr>
+<tr data-brand="Columbia"><td class="code">â</td><td class="store-name">Columbia Central Festival Chiangmai</td><td><span class="badge mono-b">Columbia</span></td><td class="num">15K</td><td class="num">5K</td><td class="num"><span class="pos">+211.4%</span></td><td class="num">146K</td><td class="num">58K</td><td class="num"><span class="pos">+152.4%</span></td></tr>
+<tr data-brand="Columbia"><td class="code">â</td><td class="store-name">Columbia Central Festival Phuket</td><td><span class="badge mono-b">Columbia</span></td><td class="num">29K</td><td class="num">30K</td><td class="num"><span class="neg">-6.3%</span></td><td class="num">275K</td><td class="num">234K</td><td class="num"><span class="pos">+17.8%</span></td></tr>
+<tr data-brand="Columbia"><td class="code">â</td><td class="store-name">Columbia Central World</td><td><span class="badge mono-b">Columbia</span></td><td class="num">12K</td><td class="num">65K</td><td class="num"><span class="neg">-81.5%</span></td><td class="num">400K</td><td class="num">522K</td><td class="num"><span class="neg">-23.4%</span></td></tr>
+<tr data-brand="Columbia"><td class="code">â</td><td class="store-name">Columbia Central Park Bangkok</td><td><span class="badge mono-b">Columbia</span></td><td class="num">1K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td><td class="num">75K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td></tr>
+<tr data-brand="Columbia"><td class="code">â</td><td class="store-name">Columbia Central Pattaya Beach</td><td><span class="badge mono-b">Columbia</span></td><td class="num">13K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td><td class="num">152K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td></tr>
+<tr data-brand="Columbia"><td class="code">â</td><td class="store-name">Columbia CPN West Gate</td><td><span class="badge mono-b">Columbia</span></td><td class="num">4K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td><td class="num">139K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td></tr>
+<tr data-brand="Columbia"><td class="code">â</td><td class="store-name">Columbia CPN Ladprao</td><td><span class="badge mono-b">Columbia</span></td><td class="num">45K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td><td class="num">404K</td><td class="num">0</td><td class="num"><span class="neutral">â</span></td></tr>
 <tr class="brand-total" data-brand="Columbia"><td colspan="2"><strong>Columbia Total</strong></td><td></td><td class="num"><strong>119K</strong></td><td class="num">100K</td><td class="num"><span class="pos">+18.4%</span></td><td class="num"><strong>1.6M</strong></td><td class="num">814K</td><td class="num"><span class="pos">+95.6%</span></td></tr>
-<tr data-brand="FILA"><td class="code">—</td><td class="store-name">Fila Central World</td><td><span class="badge mono-b">FILA</span></td><td class="num">18K</td><td class="num">29K</td><td class="num"><span class="neg">-36.9%</span></td><td class="num">222K</td><td class="num">271K</td><td class="num"><span class="neg">-17.8%</span></td></tr>
-<tr data-brand="FILA"><td class="code">—</td><td class="store-name">Fila Central Village</td><td><span class="badge mono-b">FILA</span></td><td class="num">13K</td><td class="num">40K</td><td class="num"><span class="neg">-69.0%</span></td><td class="num">200K</td><td class="num">622K</td><td class="num"><span class="neg">-67.8%</span></td></tr>
-<tr data-brand="FILA"><td class="code">—</td><td class="store-name">Fila Phuket</td><td><span class="badge mono-b">FILA</span></td><td class="num">15K</td><td class="num">19K</td><td class="num"><span class="neg">-21.8%</span></td><td class="num">159K</td><td class="num">146K</td><td class="num"><span class="pos">+8.8%</span></td></tr>
-<tr data-brand="FILA"><td class="code">—</td><td class="store-name">Fila Hatyai</td><td><span class="badge mono-b">FILA</span></td><td class="num">9K</td><td class="num">9K</td><td class="num"><span class="pos">+1.1%</span></td><td class="num">84K</td><td class="num">138K</td><td class="num"><span class="neg">-38.7%</span></td></tr>
+<tr data-brand="FILA"><td class="code">â</td><td class="store-name">Fila Central World</td><td><span class="badge mono-b">FILA</span></td><td class="num">18K</td><td class="num">29K</td><td class="num"><span class="neg">-36.9%</span></td><td class="num">222K</td><td class="num">271K</td><td class="num"><span class="neg">-17.8%</span></td></tr>
+<tr data-brand="FILA"><td class="code">â</td><td class="store-name">Fila Central Village</td><td><span class="badge mono-b">FILA</span></td><td class="num">13K</td><td class="num">40K</td><td class="num"><span class="neg">-69.0%</span></td><td class="num">200K</td><td class="num">622K</td><td class="num"><span class="neg">-67.8%</span></td></tr>
+<tr data-brand="FILA"><td class="code">â</td><td class="store-name">Fila Phuket</td><td><span class="badge mono-b">FILA</span></td><td class="num">15K</td><td class="num">19K</td><td class="num"><span class="neg">-21.8%</span></td><td class="num">159K</td><td class="num">146K</td><td class="num"><span class="pos">+8.8%</span></td></tr>
+<tr data-brand="FILA"><td class="code">â</td><td class="store-name">Fila Hatyai</td><td><span class="badge mono-b">FILA</span></td><td class="num">9K</td><td class="num">9K</td><td class="num"><span class="pos">+1.1%</span></td><td class="num">84K</td><td class="num">138K</td><td class="num"><span class="neg">-38.7%</span></td></tr>
 <tr class="brand-total" data-brand="FILA"><td colspan="2"><strong>FILA Total</strong></td><td></td><td class="num"><strong>55K</strong></td><td class="num">98K</td><td class="num"><span class="neg">-43.5%</span></td><td class="num"><strong>667K</strong></td><td class="num">1.2M</td><td class="num"><span class="neg">-43.3%</span></td></tr>
 <tr class="grand-total-row"><td colspan="3"><strong>MONO Grand Total</strong></td><td class="num"><strong>403K</strong></td><td class="num">396K</td><td class="num"><span class="pos">+1.7%</span></td><td class="num"><strong>4.5M</strong></td><td class="num">4.0M</td><td class="num"><span class="pos">+12.8%</span></td></tr></tbody>
     </table>
