@@ -773,9 +773,16 @@ def build_daily_tracking():
                 chg_cell = f'<td class="num {chg_cls}">{chg_sign}{w_chg:.1f}%</td>'
         else:
             chg_cell = '<td class="num"></td>'
+        # Week summary: show LY date range (first–last day) in the 2025 column
+        ly_first = date(yr-1, mo, min(buf[0][4], ly_month_days))
+        ly_last  = date(yr-1, mo, min(buf[-1][4], ly_month_days))
+        if ly_first == ly_last:
+            ly_range_str = thai_date(ly_first)
+        else:
+            ly_range_str = f"{ly_first.strftime('%d')}-{ly_last.strftime('%d')}/{ly_first.strftime('%m/%Y')}"
         return (
             f'<tr class="week-row">'
-            f'<td>{thai_date(date(yr-1, mo, min(buf[0][4], ly_month_days)))}</td>'
+            f'<td><strong>W{wn}</strong></td>'
             f'<td class="num"><strong>{ly_str}</strong></td>'
             f'<td><strong>W{wn}</strong></td>'
             f'<td class="num"><strong>{tg_str}</strong></td>'
