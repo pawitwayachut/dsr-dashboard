@@ -1387,32 +1387,24 @@ print(f"  Data as of: {data_day_label}")
 print(f"  SSP Daily: {fmt_m(ssp_daily)} | MTD: {fmt_m(ssp_mtd)} | Runrate: {fmt_m(runrate)}")
 print(f"  BKK MTD: {fmt_m(bkk_mtd)} | UPC MTD: {fmt_m(upc_mtd)} | MONO MTD: {fmt_m(mono_mtd)}")
 
-# ── Cleanup temp files ──
+# ── Cleanup temp files (only /tmp — avoid workspace deletes that need permission) ──
 import tempfile, glob as _glob, os as _os
 tmp_dir = tempfile.gettempdir()
 cleaned = 0
-script_dir = str(Path(__file__).parent)
-for pat in [_os.path.join(tmp_dir, '.repaired_*'), _os.path.join(script_dir, '.repaired_*'), _os.path.join(script_dir, '**/daily_targets_cache.json')]:
-    for f in _glob.glob(pat, recursive=True):
-        try:
-            _os.remove(f)
-            cleaned += 1
-            print(f"    Removed: {f}")
-        except OSError as e:
-            print(f"    FAILED to remove {f}: {e}")
-# Remove __pycache__
-import shutil as _shutil
-pycache_dir = _os.path.join(script_dir, '__pycache__')
-if _os.path.isdir(pycache_dir):
-    _shutil.rmtree(pycache_dir, ignore_errors=True)
-    cleaned += 1
+for f in _glob.glob(_os.path.join(tmp_dir, '.repaired_*')):
+    try:
+        _os.remove(f)
+        cleaned += 1
+        print(f"    Removed: {f}")
+    except OSError:
+        pass
 if cleaned:
-    print(f"  Cleaned up {cleaned} temp file(s)")
+    print(f"  Cleaned up {cleaned} temp file(s) from /tmp")
 
 # ── Sync scripts to GitHub ──
 # If local scripts differ from the GitHub copy, push them so future runs stay current.
 def _sync_to_github():
-    import json as _json, subprocess as _sp, hashlib as _hashlib
+    import json as _json, subprocess as _sp, hashlib as _hashlib, shutil as _shutil
     config_path = Path(__file__).parent / '.deploy-config.json'
     if not config_path.exists():
         return
