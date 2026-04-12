@@ -1324,7 +1324,7 @@ html = f"""<!DOCTYPE html>
       <thead><tr>
         <th>Code</th><th>Store</th><th>Region</th>
         <th class="num">Daily TY</th><th class="num">Daily LY</th><th class="num">Daily %</th>
-        <th class="num">MTD TY</th><th class="num">MTD LY</th><th class="num">MTD TG</th><th class="num">%Ach</th><th class="num">MTD %LY</th>
+        <th class="num">MTD TY</th><th class="num">MTD LY</th><th class="num">MTD %</th><th class="num">MTD TG</th><th class="num">%Ach</th>
       </tr></thead>
       <tbody id="ssp-body">{SSP_TABLE_HTML}</tbody>
     </table>
