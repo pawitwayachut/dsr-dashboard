@@ -1380,5 +1380,11 @@ for pat in [_os.path.join(tmp_dir, '.repaired_*'), _os.path.join(script_dir, '.r
             cleaned += 1
         except OSError:
             pass
+# Remove __pycache__
+import shutil as _shutil
+pycache_dir = _os.path.join(script_dir, '__pycache__')
+if _os.path.isdir(pycache_dir):
+    _shutil.rmtree(pycache_dir, ignore_errors=True)
+    cleaned += 1
 if cleaned:
     print(f"  Cleaned up {cleaned} temp file(s)")
