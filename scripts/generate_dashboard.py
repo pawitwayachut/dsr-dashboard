@@ -1213,6 +1213,10 @@ html = f"""<!DOCTYPE html>
   /* SSP table — all columns center-aligned except Store */
   #ssp-table th,#ssp-table td{{text-align:center}}
   #ssp-table td.store-name{{text-align:left}}
+  #mono-table th,#mono-table td{{text-align:center}}
+  #mono-table td.store-name{{text-align:left}}
+  #mono-table tr.brand-total td:first-child{{text-align:left}}
+  #mono-table tr.grand-total-row td:first-child{{text-align:left}}
 
   .badge{{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.3px}}
   .badge.bkk{{background:#fce8e8;color:#F90507}}
