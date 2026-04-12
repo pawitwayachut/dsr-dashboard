@@ -1047,7 +1047,8 @@ def build_mono_table():
         if not bt: return
         rows.append(
             f'<tr class="brand-total" data-brand="{brand}">'
-            f'<td colspan="2"><strong>{brand} Total</strong></td>'
+            f'<td></td>'
+            f'<td class="store-name"><strong>{brand} Total</strong></td>'
             f'<td></td>'
             f'<td class="num"><strong>{fmt_m(bt["daily_ty"])}</strong></td>'
             f'<td class="num">{fmt_m(bt["daily_ly"])}</td>'
@@ -1085,7 +1086,9 @@ def build_mono_table():
     gt_mtd_pct   = (gt['mtd_ty']/gt['mtd_ly']-1) if gt['mtd_ly'] else None
     rows.append(
         f'<tr class="grand-total-row">'
-        f'<td colspan="3"><strong>MONO Grand Total</strong></td>'
+        f'<td></td>'
+        f'<td class="store-name"><strong>MONO Grand Total</strong></td>'
+        f'<td></td>'
         f'<td class="num"><strong>{fmt_m(gt["daily_ty"])}</strong></td>'
         f'<td class="num">{fmt_m(gt["daily_ly"])}</td>'
         f'<td class="num">{fmt_pct_html(gt_daily_pct)}</td>'
@@ -1204,6 +1207,8 @@ html = f"""<!DOCTYPE html>
   tr.forecast-row td{{border-top:1px solid #D9D9D9}}
   .tag-holiday{{background:#F90507;color:#ffffff;font-size:10px;padding:1px 6px;border-radius:3px;margin-left:4px}}
   .cell-pos{{background:#e6f4ea;color:#0a8a3e}} .cell-neg{{background:#fce8e8;color:#d41920}}
+  tr.holiday-row td.cell-pos{{background:#e6f4ea;color:#0a8a3e}}
+  tr.holiday-row td.cell-neg{{background:#fce8e8;color:#d41920}}
   .highlight-yellow{{background:#fff3cd;color:#856404}}
 
   /* Daily Sales Tracking — all columns center-aligned */
@@ -1215,8 +1220,6 @@ html = f"""<!DOCTYPE html>
   #ssp-table td.store-name{{text-align:left}}
   #mono-table th,#mono-table td{{text-align:center}}
   #mono-table td.store-name{{text-align:left}}
-  #mono-table tr.brand-total td:first-child{{text-align:left}}
-  #mono-table tr.grand-total-row td:first-child{{text-align:left}}
 
   .badge{{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.3px}}
   .badge.bkk{{background:#fce8e8;color:#F90507}}
