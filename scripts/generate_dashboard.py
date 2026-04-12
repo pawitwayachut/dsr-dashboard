@@ -1389,3 +1389,66 @@ if _os.path.isdir(pycache_dir):
     cleaned += 1
 if cleaned:
     print(f"  Cleaned up {cleaned} temp file(s)")
+
+# ── Sync scripts to GitHub ──
+# If local scripts differ from the GitHub copy, push them so future runs stay current.
+def _sync_to_github():
+    import json as _json, subprocess as _sp, hashlib as _hashlib
+    config_path = Path(__file__).parent / '.deploy-config.json'
+    if not config_path.exists():
+        return
+    try:
+        cfg = _json.loads(config_path.read_text(encoding='utf-8'))
+        token = cfg.get('github_token', '')
+        if not token:
+            return
+    except Exception:
+        return
+
+    repo_url = f"https://pawitwayachut:{token}@github.com/pawitwayachut/dsr-dashboard.git"
+    sync_dir = '/tmp/dsr-sync'
+
+    # Clone
+    _sp.run(f'rm -rf {sync_dir}', shell=True, capture_output=True)
+    r = _sp.run(f'git clone {repo_url} {sync_dir}', shell=True, capture_output=True, text=True)
+    if r.returncode != 0:
+        print(f"  Sync: clone failed — {r.stderr.strip()}")
+        return
+
+    # Compare local scripts with GitHub copies
+    changed = False
+    for script_name in ['generate_dashboard.py', 'deploy_to_cloudflare.py']:
+        local_path = Path(__file__).parent / script_name
+        repo_path = Path(sync_dir) / 'scripts' / script_name
+        if not local_path.exists():
+            continue
+        local_hash = _hashlib.md5(local_path.read_bytes()).hexdigest()
+        repo_hash = _hashlib.md5(repo_path.read_bytes()).hexdigest() if repo_path.exists() else ''
+        if local_hash != repo_hash:
+            repo_path.parent.mkdir(parents=True, exist_ok=True)
+            _shutil.copy2(str(local_path), str(repo_path))
+            changed = True
+
+    if not changed:
+        _sp.run(f'rm -rf {sync_dir}', shell=True, capture_output=True)
+        return
+
+    # Push
+    _sp.run('git config user.email "pawit.wayachut@gmail.com"', shell=True, cwd=sync_dir, capture_output=True)
+    _sp.run('git config user.name "Pawit Wayachut"', shell=True, cwd=sync_dir, capture_output=True)
+    _sp.run('git add scripts/', shell=True, cwd=sync_dir, capture_output=True)
+    r = _sp.run('git diff --cached --quiet', shell=True, cwd=sync_dir, capture_output=True)
+    if r.returncode == 0:
+        _sp.run(f'rm -rf {sync_dir}', shell=True, capture_output=True)
+        return
+    from datetime import datetime as _dt
+    msg = f"Auto-sync scripts — {_dt.now().strftime('%Y-%m-%d %H:%M')}"
+    _sp.run(f'git commit -m "{msg}"', shell=True, cwd=sync_dir, capture_output=True)
+    r = _sp.run('git push origin main', shell=True, cwd=sync_dir, capture_output=True, text=True)
+    if r.returncode == 0:
+        print(f"  Sync: pushed local changes to GitHub")
+    else:
+        print(f"  Sync: push failed — {r.stderr.strip()}")
+    _sp.run(f'rm -rf {sync_dir}', shell=True, capture_output=True)
+
+_sync_to_github()
