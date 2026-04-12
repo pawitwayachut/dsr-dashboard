@@ -1378,8 +1378,9 @@ for pat in [_os.path.join(tmp_dir, '.repaired_*'), _os.path.join(script_dir, '.r
         try:
             _os.remove(f)
             cleaned += 1
-        except OSError:
-            pass
+            print(f"    Removed: {f}")
+        except OSError as e:
+            print(f"    FAILED to remove {f}: {e}")
 # Remove __pycache__
 import shutil as _shutil
 pycache_dir = _os.path.join(script_dir, '__pycache__')
