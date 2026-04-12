@@ -1210,6 +1210,10 @@ html = f"""<!DOCTYPE html>
   .daily-table th,.daily-table td{{text-align:center}}
   .daily-table td.num{{text-align:center}}
 
+  /* SSP table — all columns center-aligned except Store */
+  #ssp-table th,#ssp-table td{{text-align:center}}
+  #ssp-table td.store-name{{text-align:left}}
+
   .badge{{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.3px}}
   .badge.bkk{{background:#fce8e8;color:#F90507}}
   .badge.upc{{background:#e0e8f5;color:#002060}}
@@ -1310,7 +1314,7 @@ html = f"""<!DOCTYPE html>
   <div class="table-wrap">
     <table id="ssp-table">
       <thead><tr>
-        <th>Code</th><th>Store</th><th>DM</th><th>Region</th>
+        <th>Code</th><th>Store</th><th>Region</th>
         <th class="num">Daily TY</th><th class="num">Daily LY</th><th class="num">Daily %</th>
         <th class="num">MTD TY</th><th class="num">MTD LY</th><th class="num">MTD TG</th><th class="num">%Ach</th><th class="num">MTD %LY</th>
       </tr></thead>
