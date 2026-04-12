@@ -1372,7 +1372,8 @@ print(f"  BKK MTD: {fmt_m(bkk_mtd)} | UPC MTD: {fmt_m(upc_mtd)} | MONO MTD: {fmt
 import tempfile, glob as _glob, os as _os
 tmp_dir = tempfile.gettempdir()
 cleaned = 0
-for pat in [_os.path.join(tmp_dir, '.repaired_*'), _os.path.join(str(Path(__file__).parent), '**/daily_targets_cache.json')]:
+script_dir = str(Path(__file__).parent)
+for pat in [_os.path.join(tmp_dir, '.repaired_*'), _os.path.join(script_dir, '.repaired_*'), _os.path.join(script_dir, '**/daily_targets_cache.json')]:
     for f in _glob.glob(pat, recursive=True):
         try:
             _os.remove(f)
