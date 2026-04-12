@@ -104,7 +104,7 @@
   <h1>OPR Daily Sales Report</h1>
   <div class="meta">
     <div>Data as of <strong>Apr 11, 2026</strong></div>
-    <div>Generated 11 Apr 2026 23:16</div>
+    <div>Generated 12 Apr 2026 19:07</div>
   </div>
 </div>
 
@@ -159,7 +159,7 @@
   <button class="tab-btn" onclick="showTab('mono',this)">Mono-Brand Stores</button>
 </div>
 
-<!-- ═══ TAB: SUMMARY ═══ -->
+<!-- TAB: SUMMARY -->
 <div id="tab-summary" class="tab-content active">
 
   <div class="card" style="margin-bottom:20px">
@@ -215,10 +215,9 @@
       </table>
     </div>
   </div>
-
 </div>
 
-<!-- ═══ TAB: SUPERSPORTS STORES ═══ -->
+<!-- TAB: SSP STORES -->
 <div id="tab-ssp" class="tab-content">
   <div class="filter-bar"><button class="filter-btn active" onclick="filterSSP('ALL',this)">All</button>
 <button class="filter-btn" onclick="filterSSP('BKK',this)">BKK</button>
@@ -226,10 +225,9 @@
   <div class="table-wrap">
     <table id="ssp-table">
       <thead><tr>
-        <th>Code</th><th>Store</th><th>Region</th>
+        <th>Code</th><th>Store</th><th>DM</th><th>Region</th>
         <th class="num">Daily TY</th><th class="num">Daily LY</th><th class="num">Daily %</th>
-        <th class="num">MTD TY</th><th class="num">MTD LY</th><th class="num">MTD %</th>
-        <th class="num">MTD Target</th><th class="num">% Ach</th>
+        <th class="num">MTD TY</th><th class="num">MTD LY</th><th class="num">MTD TG</th><th class="num">%Ach</th><th class="num">MTD %LY</th>
       </tr></thead>
       <tbody id="ssp-body"><tr data-region="BKK" data-dm="Preedaporn Wongsiri"><td class="code">CW</td><td class="store-name">Central World Plaza</td><td><span class="badge bkk">BKK</span></td><td class="num">2.1M</td><td class="num">2.0M</td><td class="num"><span class="pos">+7.7%</span></td><td class="num">15.9M</td><td class="num">15.9M</td><td class="num"><span class="pos">+0.2%</span></td><td class="num">48.6M</td><td class="num"><span class="pos">+32.7%</span></td></tr>
 <tr data-region="BKK" data-dm="Preedaporn Wongsiri"><td class="code">CL</td><td class="store-name">Chidlom-C</td><td><span class="badge bkk">BKK</span></td><td class="num">484K</td><td class="num">313K</td><td class="num"><span class="pos">+54.7%</span></td><td class="num">4.0M</td><td class="num">3.1M</td><td class="num"><span class="pos">+29.1%</span></td><td class="num">10.1M</td><td class="num"><span class="pos">+39.8%</span></td></tr>
@@ -345,7 +343,7 @@
   </div>
 </div>
 
-<!-- ═══ TAB: MONO-BRAND STORES ═══ -->
+<!-- TAB: MONO -->
 <div id="tab-mono" class="tab-content">
   <div class="filter-bar"><button class="filter-btn active" onclick="filterMono('ALL',this)">All Brands</button>
 <button class="filter-btn" onclick="filterMono('Columbia',this)">Columbia</button>
