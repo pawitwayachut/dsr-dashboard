@@ -80,6 +80,8 @@
   tr.forecast-row td{border-top:1px solid #D9D9D9}
   .tag-holiday{background:#F90507;color:#ffffff;font-size:10px;padding:1px 6px;border-radius:3px;margin-left:4px}
   .cell-pos{background:#e6f4ea;color:#0a8a3e} .cell-neg{background:#fce8e8;color:#d41920}
+  tr.holiday-row td.cell-pos{background:#e6f4ea;color:#0a8a3e}
+  tr.holiday-row td.cell-neg{background:#fce8e8;color:#d41920}
   .highlight-yellow{background:#fff3cd;color:#856404}
 
   /* Daily Sales Tracking — all columns center-aligned */
@@ -91,8 +93,6 @@
   #ssp-table td.store-name{text-align:left}
   #mono-table th,#mono-table td{text-align:center}
   #mono-table td.store-name{text-align:left}
-  #mono-table tr.brand-total td:first-child{text-align:left}
-  #mono-table tr.grand-total-row td:first-child{text-align:left}
 
   .badge{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.3px}
   .badge.bkk{background:#fce8e8;color:#F90507}
@@ -112,7 +112,7 @@
   <h1>OPR Daily Sales Report</h1>
   <div class="meta">
     <div>Data as of <strong>Apr 12, 2026</strong></div>
-    <div>Generated 12 Apr 2026 23:50</div>
+    <div>Generated 12 Apr 2026 23:54</div>
   </div>
 </div>
 
@@ -367,15 +367,15 @@
         <th class="num">MTD TY</th><th class="num">MTD LY</th><th class="num">MTD %</th>
       </tr></thead>
       <tbody id="mono-body"><tr data-brand="Reebok"><td class="code">—</td><td class="store-name">Reebok Central Village</td><td><span class="badge mono-b">Reebok</span></td><td class="num">33K</td><td class="num">18K</td><td class="num"><span class="pos">+88.6%</span></td><td class="num">226K</td><td class="num">134K</td><td class="num"><span class="pos">+68.9%</span></td></tr>
-<tr class="brand-total" data-brand="Reebok"><td colspan="2"><strong>Reebok Total</strong></td><td></td><td class="num"><strong>33K</strong></td><td class="num">18K</td><td class="num"><span class="pos">+88.6%</span></td><td class="num"><strong>226K</strong></td><td class="num">134K</td><td class="num"><span class="pos">+68.9%</span></td></tr>
+<tr class="brand-total" data-brand="Reebok"><td></td><td class="store-name"><strong>Reebok Total</strong></td><td></td><td class="num"><strong>33K</strong></td><td class="num">18K</td><td class="num"><span class="pos">+88.6%</span></td><td class="num"><strong>226K</strong></td><td class="num">134K</td><td class="num"><span class="pos">+68.9%</span></td></tr>
 <tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool CPN Westgate</td><td><span class="badge mono-b">LFC</span></td><td class="num">57K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">475K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td></tr>
 <tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool FC Pattaya Beach</td><td><span class="badge mono-b">LFC</span></td><td class="num">40K</td><td class="num">71K</td><td class="num"><span class="neg">-43.2%</span></td><td class="num">459K</td><td class="num">504K</td><td class="num"><span class="neg">-9.0%</span></td></tr>
 <tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool Central Festival Chiangmai</td><td><span class="badge mono-b">LFC</span></td><td class="num">24K</td><td class="num">65K</td><td class="num"><span class="neg">-62.4%</span></td><td class="num">406K</td><td class="num">600K</td><td class="num"><span class="neg">-32.3%</span></td></tr>
 <tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool Central Festival Phuket</td><td><span class="badge mono-b">LFC</span></td><td class="num">51K</td><td class="num">50K</td><td class="num"><span class="pos">+1.2%</span></td><td class="num">557K</td><td class="num">513K</td><td class="num"><span class="pos">+8.5%</span></td></tr>
 <tr data-brand="LFC"><td class="code">—</td><td class="store-name">Liverpool Rama9</td><td><span class="badge mono-b">LFC</span></td><td class="num">59K</td><td class="num">164K</td><td class="num"><span class="neg">-63.8%</span></td><td class="num">885K</td><td class="num">1.2M</td><td class="num"><span class="neg">-28.2%</span></td></tr>
-<tr class="brand-total" data-brand="LFC"><td colspan="2"><strong>LFC Total</strong></td><td></td><td class="num"><strong>232K</strong></td><td class="num">350K</td><td class="num"><span class="neg">-33.7%</span></td><td class="num"><strong>2.8M</strong></td><td class="num">2.8M</td><td class="num"><span class="neg">-2.4%</span></td></tr>
+<tr class="brand-total" data-brand="LFC"><td></td><td class="store-name"><strong>LFC Total</strong></td><td></td><td class="num"><strong>232K</strong></td><td class="num">350K</td><td class="num"><span class="neg">-33.7%</span></td><td class="num"><strong>2.8M</strong></td><td class="num">2.8M</td><td class="num"><span class="neg">-2.4%</span></td></tr>
 <tr data-brand="Speedo"><td class="code">—</td><td class="store-name">Speedo Terminal 21 Pattaya </td><td><span class="badge mono-b">Speedo</span></td><td class="num">37K</td><td class="num">37K</td><td class="num"><span class="neg">-0.4%</span></td><td class="num">342K</td><td class="num">209K</td><td class="num"><span class="pos">+63.4%</span></td></tr>
-<tr class="brand-total" data-brand="Speedo"><td colspan="2"><strong>Speedo Total</strong></td><td></td><td class="num"><strong>37K</strong></td><td class="num">37K</td><td class="num"><span class="neg">-0.4%</span></td><td class="num"><strong>342K</strong></td><td class="num">209K</td><td class="num"><span class="pos">+63.4%</span></td></tr>
+<tr class="brand-total" data-brand="Speedo"><td></td><td class="store-name"><strong>Speedo Total</strong></td><td></td><td class="num"><strong>37K</strong></td><td class="num">37K</td><td class="num"><span class="neg">-0.4%</span></td><td class="num"><strong>342K</strong></td><td class="num">209K</td><td class="num"><span class="pos">+63.4%</span></td></tr>
 <tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia Central Festival Chiangmai</td><td><span class="badge mono-b">Columbia</span></td><td class="num">19K</td><td class="num">19K</td><td class="num"><span class="neg">-1.1%</span></td><td class="num">221K</td><td class="num">98K</td><td class="num"><span class="pos">+125.8%</span></td></tr>
 <tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia Central Festival Phuket</td><td><span class="badge mono-b">Columbia</span></td><td class="num">39K</td><td class="num">43K</td><td class="num"><span class="neg">-9.6%</span></td><td class="num">399K</td><td class="num">489K</td><td class="num"><span class="neg">-18.5%</span></td></tr>
 <tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia Central World</td><td><span class="badge mono-b">Columbia</span></td><td class="num">70K</td><td class="num">87K</td><td class="num"><span class="neg">-18.7%</span></td><td class="num">605K</td><td class="num">783K</td><td class="num"><span class="neg">-22.7%</span></td></tr>
@@ -383,13 +383,13 @@
 <tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia Central Pattaya Beach</td><td><span class="badge mono-b">Columbia</span></td><td class="num">68K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">316K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td></tr>
 <tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia CPN West Gate</td><td><span class="badge mono-b">Columbia</span></td><td class="num">7K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">173K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td></tr>
 <tr data-brand="Columbia"><td class="code">—</td><td class="store-name">Columbia CPN Ladprao</td><td><span class="badge mono-b">Columbia</span></td><td class="num">64K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td><td class="num">600K</td><td class="num">0</td><td class="num"><span class="neutral">—</span></td></tr>
-<tr class="brand-total" data-brand="Columbia"><td colspan="2"><strong>Columbia Total</strong></td><td></td><td class="num"><strong>276K</strong></td><td class="num">149K</td><td class="num"><span class="pos">+84.9%</span></td><td class="num"><strong>2.4M</strong></td><td class="num">1.4M</td><td class="num"><span class="pos">+76.8%</span></td></tr>
+<tr class="brand-total" data-brand="Columbia"><td></td><td class="store-name"><strong>Columbia Total</strong></td><td></td><td class="num"><strong>276K</strong></td><td class="num">149K</td><td class="num"><span class="pos">+84.9%</span></td><td class="num"><strong>2.4M</strong></td><td class="num">1.4M</td><td class="num"><span class="pos">+76.8%</span></td></tr>
 <tr data-brand="FILA"><td class="code">—</td><td class="store-name">Fila Central World</td><td><span class="badge mono-b">FILA</span></td><td class="num">31K</td><td class="num">43K</td><td class="num"><span class="neg">-26.0%</span></td><td class="num">317K</td><td class="num">376K</td><td class="num"><span class="neg">-15.8%</span></td></tr>
 <tr data-brand="FILA"><td class="code">—</td><td class="store-name">Fila Central Village</td><td><span class="badge mono-b">FILA</span></td><td class="num">30K</td><td class="num">115K</td><td class="num"><span class="neg">-74.1%</span></td><td class="num">294K</td><td class="num">885K</td><td class="num"><span class="neg">-66.8%</span></td></tr>
 <tr data-brand="FILA"><td class="code">—</td><td class="store-name">Fila Phuket</td><td><span class="badge mono-b">FILA</span></td><td class="num">21K</td><td class="num">10K</td><td class="num"><span class="pos">+98.1%</span></td><td class="num">244K</td><td class="num">219K</td><td class="num"><span class="pos">+11.5%</span></td></tr>
 <tr data-brand="FILA"><td class="code">—</td><td class="store-name">Fila Hatyai</td><td><span class="badge mono-b">FILA</span></td><td class="num">16K</td><td class="num">13K</td><td class="num"><span class="pos">+21.6%</span></td><td class="num">144K</td><td class="num">182K</td><td class="num"><span class="neg">-21.0%</span></td></tr>
-<tr class="brand-total" data-brand="FILA"><td colspan="2"><strong>FILA Total</strong></td><td></td><td class="num"><strong>98K</strong></td><td class="num">181K</td><td class="num"><span class="neg">-46.0%</span></td><td class="num"><strong>998K</strong></td><td class="num">1.7M</td><td class="num"><span class="neg">-40.0%</span></td></tr>
-<tr class="grand-total-row"><td colspan="3"><strong>MONO Grand Total</strong></td><td class="num"><strong>676K</strong></td><td class="num">735K</td><td class="num"><span class="neg">-8.1%</span></td><td class="num"><strong>6.8M</strong></td><td class="num">6.2M</td><td class="num"><span class="pos">+8.8%</span></td></tr></tbody>
+<tr class="brand-total" data-brand="FILA"><td></td><td class="store-name"><strong>FILA Total</strong></td><td></td><td class="num"><strong>98K</strong></td><td class="num">181K</td><td class="num"><span class="neg">-46.0%</span></td><td class="num"><strong>998K</strong></td><td class="num">1.7M</td><td class="num"><span class="neg">-40.0%</span></td></tr>
+<tr class="grand-total-row"><td></td><td class="store-name"><strong>MONO Grand Total</strong></td><td></td><td class="num"><strong>676K</strong></td><td class="num">735K</td><td class="num"><span class="neg">-8.1%</span></td><td class="num"><strong>6.8M</strong></td><td class="num">6.2M</td><td class="num"><span class="pos">+8.8%</span></td></tr></tbody>
     </table>
   </div>
 </div>
