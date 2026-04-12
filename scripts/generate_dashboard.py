@@ -196,6 +196,17 @@ def fmt_pct_html(val, good_positive=True):
     sign = '+' if pct >= 0 else ''
     return f'<span class="{cls}">{sign}{pct:.1f}%</span>'
 
+def fmt_ach_html(val, expected_pace):
+    """Format %Ach: no color by default, green if ahead of pace, red if behind."""
+    if val is None: return '<span class="neutral">—</span>'
+    pct = val * 100
+    if pct >= expected_pace:
+        return f'<span class="pos">{pct:.1f}%</span>'
+    elif pct < expected_pace * 0.9:  # more than 10% behind pace → red
+        return f'<span class="neg">{pct:.1f}%</span>'
+    else:
+        return f'{pct:.1f}%'
+
 def fmt_diff_cell(diff_val):
     """Format diff in M with background color. Zero = no highlight."""
     if diff_val is None: return '<td class="num"></td>'
@@ -512,6 +523,7 @@ mono_stores, mono_date = parse_mono(mono_path)
 
 data_day_num = bkk_day or now.day
 month_days   = cal_mod.monthrange(now.year, now.month)[1]
+expected_pace = (data_day_num / month_days) * 100  # expected %Ach by today
 
 combined_daily = {}
 for d in range(1, month_days + 1):
@@ -944,7 +956,7 @@ def build_ssp_table():
                     f'<td class="num">{fmt_m(s["mtd_ly"])}</td>'
                     f'<td class="num">{fmt_pct_html(s["mtd_pct"])}</td>'
                     f'<td class="num">{fmt_m(s["target"])}</td>'
-                    f'<td class="num">{fmt_pct_html(s["pct_ach"])}</td>'
+                    f'<td class="num">{fmt_ach_html(s["pct_ach"], expected_pace)}</td>'
                     f'</tr>'
                 )
             # DM subtotal row
@@ -961,7 +973,7 @@ def build_ssp_table():
                     f'<td class="num">{fmt_m(d["mtd_ly"])}</td>'
                     f'<td class="num">{fmt_pct_html(d["mtd_pct"])}</td>'
                     f'<td class="num">{fmt_m(d["target"])}</td>'
-                    f'<td class="num">{fmt_pct_html(d["pct_ach"])}</td>'
+                    f'<td class="num">{fmt_ach_html(d["pct_ach"], expected_pace)}</td>'
                     f'</tr>'
                 )
 
@@ -985,7 +997,7 @@ def build_ssp_table():
             f'<td class="num"><strong>{fmt_m(r_mtd_ly)}</strong></td>'
             f'<td class="num"><strong>{fmt_pct_html(r_mtd_pct)}</strong></td>'
             f'<td class="num"><strong>{fmt_m(r_target)}</strong></td>'
-            f'<td class="num"><strong>{fmt_pct_html(r_ach)}</strong></td>'
+            f'<td class="num"><strong>{fmt_ach_html(r_ach, expected_pace)}</strong></td>'
             f'</tr>'
         )
         return rows
@@ -1016,7 +1028,7 @@ def build_ssp_table():
         f'<td class="num"><strong>{fmt_m(g_mtd_ly)}</strong></td>'
         f'<td class="num"><strong>{fmt_pct_html(g_mtd_pct)}</strong></td>'
         f'<td class="num"><strong>{fmt_m(g_target)}</strong></td>'
-        f'<td class="num"><strong>{fmt_pct_html(g_ach)}</strong></td>'
+        f'<td class="num"><strong>{fmt_ach_html(g_ach, expected_pace)}</strong></td>'
         f'</tr>'
     )
 
@@ -1324,7 +1336,7 @@ html = f"""<!DOCTYPE html>
       <thead><tr>
         <th>Code</th><th>Store</th><th>Region</th>
         <th class="num">Daily TY</th><th class="num">Daily LY</th><th class="num">Daily %</th>
-        <th class="num">MTD TY</th><th class="num">MTD LY</th><th class="num">MTD %</th><th class="num">MTD TG</th><th class="num">%Ach</th>
+        <th class="num">MTD TY</th><th class="num">MTD LY</th><th class="num">MTD %</th><th class="num">{now.strftime('%b')} TG</th><th class="num">%Ach</th>
       </tr></thead>
       <tbody id="ssp-body">{SSP_TABLE_HTML}</tbody>
     </table>
