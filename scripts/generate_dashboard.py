@@ -24,19 +24,10 @@ month_label = now.strftime("%b%Y")
 OUTPUT_FILE = SCRIPT_DIR / f"DSR_Dashboard_{month_label}.html"
 
 # ─── DATA SOURCE PATHS ───────────────────────────────────────────────────────
-# Primary: Shared Drive (separate SSP and MONO roots)
-# Fallback: legacy single-folder layout (OPR - Daily Sales Report/SSP & MONO)
+# Source: Shared Drive (separate SSP and MONO roots)
 SHARED_DRIVE = SCRIPT_DIR.parent / "Shared Drive"
-LEGACY_BASE  = SCRIPT_DIR / "OPR - Daily Sales Report"
-
 SSP_BASE  = SHARED_DRIVE / "SSP" / "Daily Sales Report"
 MONO_BASE = SHARED_DRIVE / "MONO" / "Daily Sales Report"
-
-# Fall back to legacy paths if Shared Drive not available
-if not SSP_BASE.exists():
-    SSP_BASE = LEGACY_BASE / "SSP"
-if not MONO_BASE.exists():
-    MONO_BASE = LEGACY_BASE / "MONO"
 
 THAI_DOW   = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.']
 THAI_HOLIDAYS = {
@@ -149,19 +140,6 @@ def stage_from_sources(filename_glob, *source_folders):
 ssp_folder  = find_latest_folder(SSP_BASE)
 mono_folder = find_latest_folder(MONO_BASE)
 
-_legacy_ssp_folder = None
-_legacy_mono_folder = None
-_legacy_ssp = LEGACY_BASE / "SSP"
-_legacy_mono = LEGACY_BASE / "MONO"
-if _legacy_ssp.exists() and _legacy_ssp != SSP_BASE:
-    try: _legacy_ssp_folder = find_latest_folder(_legacy_ssp)
-    except FileNotFoundError: pass
-if _legacy_mono.exists() and _legacy_mono != MONO_BASE:
-    try: _legacy_mono_folder = find_latest_folder(_legacy_mono)
-    except FileNotFoundError: pass
-
-# Safe fallback directory (outside OneDrive, immune to sync corruption)
-SAFE_DIR = Path("/sessions/clever-vigilant-cannon")
 
 def repair_zip_file(filepath):
     """Repair xlsx files corrupted by OneDrive (truncated, overlapped entries, garbled XML).
@@ -244,10 +222,10 @@ def validate_xlsx(path):
 
 # ─── STAGE FILES TO WORKING FOLDER ───────────────────────────────────────────
 print("Staging source files...")
-bkk_path = stage_from_sources("ROM_BKK_SALE*.xlsx", ssp_folder, _legacy_ssp_folder)
-upc_path = stage_from_sources("ROM_UPC_SALE*.xlsx", ssp_folder, _legacy_ssp_folder)
-mono_path = stage_from_sources("Daily Analyst.xlsx", mono_folder, _legacy_mono_folder)
-daily_summary_path = stage_from_sources("SSP MTD Sales Tracking*.xlsx", ssp_folder, _legacy_ssp_folder)
+bkk_path = stage_from_sources("ROM_BKK_SALE*.xlsx", ssp_folder)
+upc_path = stage_from_sources("ROM_UPC_SALE*.xlsx", ssp_folder)
+mono_path = stage_from_sources("Daily Analyst.xlsx", mono_folder)
+daily_summary_path = stage_from_sources("SSP MTD Sales Tracking*.xlsx", ssp_folder)
 
 if not bkk_path: raise FileNotFoundError("Cannot find readable ROM_BKK file in any source")
 if not upc_path: raise FileNotFoundError("Cannot find readable ROM_UPC file in any source")
