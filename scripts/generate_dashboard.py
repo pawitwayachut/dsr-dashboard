@@ -18,10 +18,24 @@ from datetime import datetime, date, timedelta
 # ─── PATHS ────────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR  = Path(__file__).parent
-BASE        = SCRIPT_DIR / "OPR - Daily Sales Report"
 now         = datetime.now()
 month_label = now.strftime("%b%Y")
 OUTPUT_FILE = SCRIPT_DIR / f"DSR_Dashboard_{month_label}.html"
+
+# ─── DATA SOURCE PATHS ───────────────────────────────────────────────────────
+# Primary: Shared Drive (separate SSP and MONO roots)
+# Fallback: legacy single-folder layout (OPR - Daily Sales Report/SSP & MONO)
+SHARED_DRIVE = SCRIPT_DIR.parent / "Shared Drive"
+LEGACY_BASE  = SCRIPT_DIR / "OPR - Daily Sales Report"
+
+SSP_BASE  = SHARED_DRIVE / "SSP" / "Daily Sales Report"
+MONO_BASE = SHARED_DRIVE / "MONO" / "Daily Sales Report"
+
+# Fall back to legacy paths if Shared Drive not available
+if not SSP_BASE.exists():
+    SSP_BASE = LEGACY_BASE / "SSP"
+if not MONO_BASE.exists():
+    MONO_BASE = LEGACY_BASE / "MONO"
 
 THAI_DOW   = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.']
 THAI_HOLIDAYS = {
@@ -87,8 +101,8 @@ def find_latest_folder(base_path):
         raise FileNotFoundError(f"No YYYYMM folders found in {base_path}")
     return folders[-1]
 
-ssp_folder  = find_latest_folder(BASE / "SSP")
-mono_folder = find_latest_folder(BASE / "MONO")
+ssp_folder  = find_latest_folder(SSP_BASE)
+mono_folder = find_latest_folder(MONO_BASE)
 
 # Safe fallback directory (outside OneDrive, immune to sync corruption)
 SAFE_DIR = Path("/sessions/clever-vigilant-cannon")
