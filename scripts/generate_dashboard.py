@@ -25,11 +25,56 @@ OUTPUT_FILE = SCRIPT_DIR / f"DSR_Dashboard_{month_label}.html"
 
 THAI_DOW   = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.']
 THAI_HOLIDAYS = {
-    (2026,4,6): 'Chakri', (2026,4,13): 'Songkran',
-    (2026,4,14): 'Songkran', (2026,4,15): 'Songkran',
-    (2026,5,1): 'Labour Day', (2026,5,4): 'Coronation Day',
-    (2026,6,3): 'Queen Birthday',
+    # 2026 Thai public holidays + substitution days
+    (2026,1,1):  'New Year',
+    (2026,1,2):  'New Year Sub',       # Fri sub for Sat Jan 3 cluster
+    (2026,2,17): 'Makha Bucha',
+    (2026,4,6):  'Chakri',
+    (2026,4,13): 'Songkran',
+    (2026,4,14): 'Songkran',
+    (2026,4,15): 'Songkran',
+    (2026,5,1):  'Labour Day',
+    (2026,5,4):  'Coronation Day',
+    (2026,5,11): 'Visakha Bucha',
+    (2026,6,3):  'Queen Birthday',
+    (2026,7,9):  'Asanha Bucha',
+    (2026,7,10): 'Buddhist Lent',
+    (2026,7,28): 'King Birthday',
+    (2026,8,12): 'Queen Mother Birthday',
+    (2026,10,13): 'Rama IX Memorial',
+    (2026,10,23): 'Chulalongkorn Day',
+    (2026,12,5): 'Father\'s Day',
+    (2026,12,7): 'Father\'s Day Sub',  # Sat→Mon
+    (2026,12,10): 'Constitution Day',
+    (2026,12,31): 'New Year Eve',
+    # 2025 holidays (for LY lookups)
+    (2025,4,6):  'Chakri',
+    (2025,4,7):  'Chakri Sub',         # Sun→Mon
+    (2025,4,13): 'Songkran',
+    (2025,4,14): 'Songkran',
+    (2025,4,15): 'Songkran',
+    (2025,4,16): 'Songkran Sub',       # Sun→Wed cluster
+    (2025,5,1):  'Labour Day',
+    (2025,5,5):  'Coronation Day',
+    (2025,5,11): 'Visakha Bucha',
+    (2025,5,12): 'Visakha Sub',
+    (2025,6,3):  'Queen Birthday',
+    (2025,7,10): 'Asanha Bucha',
+    (2025,7,11): 'Buddhist Lent',
+    (2025,7,28): 'King Birthday',
+    (2025,8,12): 'Queen Mother Birthday',
+    (2025,10,13): 'Rama IX Memorial',
+    (2025,10,23): 'Chulalongkorn Day',
+    (2025,12,5): 'Father\'s Day',
+    (2025,12,10): 'Constitution Day',
+    (2025,12,31): 'New Year Eve',
 }
+
+def is_holiday_or_weekend(dt_obj):
+    """Returns True if the date is a weekend (Sat/Sun) or a Thai public holiday/substitution day."""
+    if dt_obj.weekday() >= 5:  # Sat/Sun
+        return True
+    return (dt_obj.year, dt_obj.month, dt_obj.day) in THAI_HOLIDAYS
 
 # ─── FILE DISCOVERY ───────────────────────────────────────────────────────────
 
@@ -607,15 +652,15 @@ if not daily_targets:
     ssp_avg_wknd = sum(safe(s.get('avg_wknd'),0) for s in bkk_stores + upc_stores if isinstance(safe(s.get('avg_wknd'),0),(int,float)))
     weighted_total = 0
     for d in range(1, month_days + 1):
-        dow = date(now.year, now.month, d).weekday()
-        if dow == 4: weighted_total += ssp_avg_fri
-        elif dow >= 5: weighted_total += ssp_avg_wknd
+        dt_obj = date(now.year, now.month, d)
+        if is_holiday_or_weekend(dt_obj): weighted_total += ssp_avg_wknd
+        elif dt_obj.weekday() == 4: weighted_total += ssp_avg_fri
         else: weighted_total += ssp_avg_wd
     scale = ssp_monthly_target / weighted_total if weighted_total else 0
     for d in range(1, month_days + 1):
-        dow = date(now.year, now.month, d).weekday()
-        if dow == 4: daily_targets[d] = ssp_avg_fri * scale
-        elif dow >= 5: daily_targets[d] = ssp_avg_wknd * scale
+        dt_obj = date(now.year, now.month, d)
+        if is_holiday_or_weekend(dt_obj): daily_targets[d] = ssp_avg_wknd * scale
+        elif dt_obj.weekday() == 4: daily_targets[d] = ssp_avg_fri * scale
         else: daily_targets[d] = ssp_avg_wd * scale
 
 # Today's daily target
@@ -658,21 +703,19 @@ ssp_avg_fri_all  = sum(safe(s.get('avg_fri'),0) for s in bkk_stores + upc_stores
 remaining_wd = 0
 remaining_wknd = 0
 for d in range(data_day_num + 1, month_days + 1):
-    dow = date(now.year, now.month, d).weekday()
-    if dow >= 5:
+    dt_obj = date(now.year, now.month, d)
+    if is_holiday_or_weekend(dt_obj):
         remaining_wknd += 1
-    elif dow == 4:
-        remaining_wd += 1  # Count Friday as weekday (uses avg_fri but close enough, or separate)
     else:
         remaining_wd += 1
 
-# Use avg weekday for Mon-Fri, avg weekend for Sat-Sun
+# Use avg weekend for Sat/Sun/holidays, avg_fri for Fri, avg_wd for normal weekdays
 remaining_projection = 0
 for d in range(data_day_num + 1, month_days + 1):
-    dow = date(now.year, now.month, d).weekday()
-    if dow >= 5:
+    dt_obj = date(now.year, now.month, d)
+    if is_holiday_or_weekend(dt_obj):
         remaining_projection += ssp_avg_wknd_all
-    elif dow == 4:
+    elif dt_obj.weekday() == 4:
         remaining_projection += ssp_avg_fri_all
     else:
         remaining_projection += ssp_avg_wd_all
@@ -683,8 +726,17 @@ runrate_vs_ly = (runrate / ly_full_month_est - 1) if ly_full_month_est else None
 runrate_diff_tg = runrate - ssp_monthly_target
 
 # ─── DAILY KPI METRICS ──────────────────────────────────────────────────────
-# Daily: LY daily for same TY day
-ssp_daily_ly = total(bkk_stores, 'daily_ly') + total(upc_stores, 'daily_ly')
+# Daily LY: use DOW-aligned date from tracking file (same source as summary table)
+ly_day_for_today = data_day_num + _offset
+ly_month_days_for_daily = cal_mod.monthrange(now.year-1, now.month)[1]
+if ly_day_for_today <= ly_month_days_for_daily:
+    ly_daily_date = date(now.year-1, now.month, ly_day_for_today)
+    ssp_daily_ly = ly_daily_from_tracking.get(ly_daily_date, 0)
+else:
+    ssp_daily_ly = 0
+# Fallback to ROM if tracking file has no data for this day
+if not ssp_daily_ly:
+    ssp_daily_ly = total(bkk_stores, 'daily_ly') + total(upc_stores, 'daily_ly')
 daily_diff = ssp_daily - today_target
 daily_vs_tg = (ssp_daily / today_target - 1) if today_target else None
 daily_vs_ly = (ssp_daily / ssp_daily_ly - 1) if ssp_daily_ly else None
