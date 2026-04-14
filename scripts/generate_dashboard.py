@@ -101,8 +101,63 @@ def find_latest_folder(base_path):
         raise FileNotFoundError(f"No YYYYMM folders found in {base_path}")
     return folders[-1]
 
+# ─── TEMP WORKING FOLDER ─────────────────────────────────────────────────────
+# Copy source files off OneDrive into a local temp folder before reading.
+# This avoids Files On-Demand stubs, mid-sync corruption, and lock conflicts.
+
+import tempfile, shutil
+
+WORK_DIR = Path(tempfile.mkdtemp(prefix="dsr_work_"))
+print(f"Working folder: {WORK_DIR}")
+
+def stage_file(src, dest_dir):
+    """Copy a file to the working folder. Returns dest path, or None if copy fails."""
+    dest = dest_dir / src.name
+    try:
+        shutil.copy2(src, dest)
+        return dest
+    except Exception as e:
+        print(f"  WARNING: Could not copy {src.name}: {e}")
+        return None
+
+def stage_from_sources(filename_glob, *source_folders):
+    """Try to stage a file from multiple source folders (first valid wins).
+    Returns the staged path or None."""
+    for folder in source_folders:
+        if folder is None or not folder.exists():
+            continue
+        candidates = sorted(folder.glob(filename_glob))
+        for src in candidates:
+            staged = stage_file(src, WORK_DIR)
+            if staged:
+                try:
+                    validate_xlsx(staged)
+                    print(f"  Staged: {src.name} (from {folder})")
+                    return staged
+                except Exception:
+                    # Try repair
+                    repaired = repair_zip_file(staged)
+                    if repaired:
+                        print(f"  Staged (repaired): {src.name} (from {folder})")
+                        return repaired
+                    staged.unlink(missing_ok=True)
+                    print(f"  Skipped corrupt: {src.name} (from {folder})")
+    return None
+
+# Discover source folders
 ssp_folder  = find_latest_folder(SSP_BASE)
 mono_folder = find_latest_folder(MONO_BASE)
+
+_legacy_ssp_folder = None
+_legacy_mono_folder = None
+_legacy_ssp = LEGACY_BASE / "SSP"
+_legacy_mono = LEGACY_BASE / "MONO"
+if _legacy_ssp.exists() and _legacy_ssp != SSP_BASE:
+    try: _legacy_ssp_folder = find_latest_folder(_legacy_ssp)
+    except FileNotFoundError: pass
+if _legacy_mono.exists() and _legacy_mono != MONO_BASE:
+    try: _legacy_mono_folder = find_latest_folder(_legacy_mono)
+    except FileNotFoundError: pass
 
 # Safe fallback directory (outside OneDrive, immune to sync corruption)
 SAFE_DIR = Path("/sessions/clever-vigilant-cannon")
@@ -188,71 +243,18 @@ def validate_xlsx(path):
     wb = openpyxl.load_workbook(path, data_only=True, read_only=True)
     wb.close()
 
-def find_readable(primary_glob, safe_pattern=None, fallback_globs=None):
-    """Find first readable xlsx from primary glob, then fallback paths, then safe dir."""
-    all_sources = [("primary", primary_glob)]
-    if fallback_globs:
-        for label, fg in fallback_globs:
-            all_sources.append((label, fg))
-    for label, glob_list in all_sources:
-        for p in glob_list:
-            try:
-                validate_xlsx(p)
-                if label != "primary":
-                    print(f"  Using {label} fallback: {p.name}")
-                return p
-            except Exception:
-                repaired = repair_zip_file(p)
-                if repaired:
-                    if label != "primary":
-                        print(f"  Using repaired {label}: {p.name}")
-                    return repaired
-    if safe_pattern:
-        for p in sorted(SAFE_DIR.glob(safe_pattern)):
-            try:
-                validate_xlsx(p)
-                print(f"  Using safe fallback: {p.name}")
-                return p
-            except Exception:
-                pass
-    return next(iter(primary_glob), None)
+# ─── STAGE FILES TO WORKING FOLDER ───────────────────────────────────────────
+print("Staging source files...")
+bkk_path = stage_from_sources("ROM_BKK_SALE*.xlsx", ssp_folder, _legacy_ssp_folder)
+upc_path = stage_from_sources("ROM_UPC_SALE*.xlsx", ssp_folder, _legacy_ssp_folder)
+mono_path = stage_from_sources("Daily Analyst.xlsx", mono_folder, _legacy_mono_folder)
+daily_summary_path = stage_from_sources("SSP MTD Sales Tracking*.xlsx", ssp_folder, _legacy_ssp_folder)
 
-# Build fallback globs from legacy path if different from primary
-_legacy_ssp = LEGACY_BASE / "SSP"
-_legacy_ssp_folder = None
-if _legacy_ssp.exists() and _legacy_ssp != SSP_BASE:
-    try:
-        _legacy_ssp_folder = find_latest_folder(_legacy_ssp)
-    except FileNotFoundError:
-        pass
+if not bkk_path: raise FileNotFoundError("Cannot find readable ROM_BKK file in any source")
+if not upc_path: raise FileNotFoundError("Cannot find readable ROM_UPC file in any source")
+if not mono_path: raise FileNotFoundError("Cannot find readable Daily Analyst file in any source")
 
-bkk_fallbacks = [("legacy", list(_legacy_ssp_folder.glob("ROM_BKK_SALE*.xlsx")))] if _legacy_ssp_folder else None
-upc_fallbacks = [("legacy", list(_legacy_ssp_folder.glob("ROM_UPC_SALE*.xlsx")))] if _legacy_ssp_folder else None
-
-bkk_path    = find_readable(list(ssp_folder.glob("ROM_BKK_SALE*.xlsx")), "ROM_BKK_SAFE*.xlsx", bkk_fallbacks)
-upc_path    = find_readable(list(ssp_folder.glob("ROM_UPC_SALE*.xlsx")), "ROM_UPC_SAFE*.xlsx", upc_fallbacks)
-# MONO — with legacy fallback
-_legacy_mono = LEGACY_BASE / "MONO"
-_legacy_mono_folder = None
-if _legacy_mono.exists() and _legacy_mono != MONO_BASE:
-    try:
-        _legacy_mono_folder = find_latest_folder(_legacy_mono)
-    except FileNotFoundError:
-        pass
-
-mono_fallbacks = [("legacy", [_legacy_mono_folder / "Daily Analyst.xlsx"])] if _legacy_mono_folder else None
-mono_path = find_readable([mono_folder / "Daily Analyst.xlsx"], fallback_globs=mono_fallbacks)
-if mono_path is None:
-    mono_path = mono_folder / "Daily Analyst.xlsx"  # will error later with clear message
-
-# SSP MTD Sales Tracking file — with legacy fallback
-# Provides: daily targets (Summary sheet) + LY daily sales (Daily Sales sheet)
-trk_candidates = list(ssp_folder.glob("SSP MTD Sales Tracking*.xlsx"))
-trk_fallback_candidates = list(_legacy_ssp_folder.glob("SSP MTD Sales Tracking*.xlsx")) if _legacy_ssp_folder else []
-trk_fallbacks = [("legacy", trk_fallback_candidates)] if trk_fallback_candidates else None
-daily_summary_path = find_readable(trk_candidates, fallback_globs=trk_fallbacks)
-
-print("Files found:")
+print(f"\nFiles staged:")
 print(f"  BKK : {bkk_path.name}")
 print(f"  UPC : {upc_path.name}")
 print(f"  MONO: {mono_path.name}")
@@ -1576,3 +1578,9 @@ def _sync_to_github():
     _sp.run(f'rm -rf {sync_dir}', shell=True, capture_output=True)
 
 _sync_to_github()
+
+# ─── CLEANUP TEMP WORKING FOLDER ─────────────────────────────────────────────
+try:
+    shutil.rmtree(WORK_DIR, ignore_errors=True)
+except Exception:
+    pass
