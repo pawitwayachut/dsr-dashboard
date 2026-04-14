@@ -173,53 +173,84 @@ def repair_zip_file(filepath):
     output.seek(0)
     with open(repaired_path, 'wb') as f:
         f.write(output.read())
+    # Validate repaired file can actually be opened by openpyxl
+    try:
+        wb = openpyxl.load_workbook(repaired_path, data_only=True, read_only=True)
+        wb.close()
+    except Exception:
+        repaired_path.unlink(missing_ok=True)
+        return None
     print(f"  Repaired truncated file: {filepath.name} → {repaired_path}")
     return repaired_path
 
-def find_readable(primary_glob, safe_pattern=None):
-    """Find first readable xlsx file from primary glob, fallback to repair or safe dir."""
-    for p in primary_glob:
-        try:
-            zipfile.ZipFile(p).close()
-            return p
-        except Exception:
-            # Try repairing
-            repaired = repair_zip_file(p)
-            if repaired:
-                return repaired
+def validate_xlsx(path):
+    """Validate xlsx by attempting openpyxl load (catches all corruption types including overlapped entries)."""
+    wb = openpyxl.load_workbook(path, data_only=True, read_only=True)
+    wb.close()
+
+def find_readable(primary_glob, safe_pattern=None, fallback_globs=None):
+    """Find first readable xlsx from primary glob, then fallback paths, then safe dir."""
+    all_sources = [("primary", primary_glob)]
+    if fallback_globs:
+        for label, fg in fallback_globs:
+            all_sources.append((label, fg))
+    for label, glob_list in all_sources:
+        for p in glob_list:
+            try:
+                validate_xlsx(p)
+                if label != "primary":
+                    print(f"  Using {label} fallback: {p.name}")
+                return p
+            except Exception:
+                repaired = repair_zip_file(p)
+                if repaired:
+                    if label != "primary":
+                        print(f"  Using repaired {label}: {p.name}")
+                    return repaired
     if safe_pattern:
         for p in sorted(SAFE_DIR.glob(safe_pattern)):
             try:
-                zipfile.ZipFile(p).close()
+                validate_xlsx(p)
                 print(f"  Using safe fallback: {p.name}")
                 return p
             except Exception:
                 pass
     return next(iter(primary_glob), None)
 
-bkk_path    = find_readable(list(ssp_folder.glob("ROM_BKK_SALE*.xlsx")), "ROM_BKK_SAFE*.xlsx")
-upc_path    = find_readable(list(ssp_folder.glob("ROM_UPC_SALE*.xlsx")), "ROM_UPC_SAFE*.xlsx")
-mono_path_raw = mono_folder / "Daily Analyst.xlsx"
-try:
-    zipfile.ZipFile(mono_path_raw).close()
-    mono_path = mono_path_raw
-except Exception:
-    repaired = repair_zip_file(mono_path_raw)
-    mono_path = repaired if repaired else mono_path_raw
-
-# SSP MTD Sales Tracking file — lives in SSP/YYYYMM folder
-# Provides: daily targets (Summary sheet) + LY daily sales (Daily Sales sheet)
-tracking_candidates = list(ssp_folder.glob("SSP MTD Sales Tracking*.xlsx"))
-if tracking_candidates:
-    trk_raw = tracking_candidates[0]
+# Build fallback globs from legacy path if different from primary
+_legacy_ssp = LEGACY_BASE / "SSP"
+_legacy_ssp_folder = None
+if _legacy_ssp.exists() and _legacy_ssp != SSP_BASE:
     try:
-        zipfile.ZipFile(trk_raw).close()
-        daily_summary_path = trk_raw
-    except Exception:
-        repaired = repair_zip_file(trk_raw)
-        daily_summary_path = repaired if repaired else trk_raw
-else:
-    daily_summary_path = None
+        _legacy_ssp_folder = find_latest_folder(_legacy_ssp)
+    except FileNotFoundError:
+        pass
+
+bkk_fallbacks = [("legacy", list(_legacy_ssp_folder.glob("ROM_BKK_SALE*.xlsx")))] if _legacy_ssp_folder else None
+upc_fallbacks = [("legacy", list(_legacy_ssp_folder.glob("ROM_UPC_SALE*.xlsx")))] if _legacy_ssp_folder else None
+
+bkk_path    = find_readable(list(ssp_folder.glob("ROM_BKK_SALE*.xlsx")), "ROM_BKK_SAFE*.xlsx", bkk_fallbacks)
+upc_path    = find_readable(list(ssp_folder.glob("ROM_UPC_SALE*.xlsx")), "ROM_UPC_SAFE*.xlsx", upc_fallbacks)
+# MONO — with legacy fallback
+_legacy_mono = LEGACY_BASE / "MONO"
+_legacy_mono_folder = None
+if _legacy_mono.exists() and _legacy_mono != MONO_BASE:
+    try:
+        _legacy_mono_folder = find_latest_folder(_legacy_mono)
+    except FileNotFoundError:
+        pass
+
+mono_fallbacks = [("legacy", [_legacy_mono_folder / "Daily Analyst.xlsx"])] if _legacy_mono_folder else None
+mono_path = find_readable([mono_folder / "Daily Analyst.xlsx"], fallback_globs=mono_fallbacks)
+if mono_path is None:
+    mono_path = mono_folder / "Daily Analyst.xlsx"  # will error later with clear message
+
+# SSP MTD Sales Tracking file — with legacy fallback
+# Provides: daily targets (Summary sheet) + LY daily sales (Daily Sales sheet)
+trk_candidates = list(ssp_folder.glob("SSP MTD Sales Tracking*.xlsx"))
+trk_fallback_candidates = list(_legacy_ssp_folder.glob("SSP MTD Sales Tracking*.xlsx")) if _legacy_ssp_folder else []
+trk_fallbacks = [("legacy", trk_fallback_candidates)] if trk_fallback_candidates else None
+daily_summary_path = find_readable(trk_candidates, fallback_globs=trk_fallbacks)
 
 print("Files found:")
 print(f"  BKK : {bkk_path.name}")
