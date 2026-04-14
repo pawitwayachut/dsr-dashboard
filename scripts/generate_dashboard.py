@@ -641,6 +641,10 @@ for d in range(1, data_day_num + 1):
         ly_dt = date(now.year-1, now.month, ly_day)
         ly_mtd += ly_daily_from_tracking.get(ly_dt, 0)
 
+# Override SSP vs LY with DOW-aligned LY MTD from tracking file (more accurate than ROM store-level sum)
+if ly_mtd:
+    ssp_pct_ly = (ssp_mtd / ly_mtd - 1)
+
 # Forecast Landing = monthly target
 forecast_landing = ssp_monthly_target
 forecast_vs_ly   = (forecast_landing / ly_full_month_est - 1) if ly_full_month_est else None
