@@ -25,7 +25,31 @@ OUTPUT_FILE = SCRIPT_DIR / f"DSR_Dashboard_{month_label}.html"
 
 # ─── DATA SOURCE PATHS ───────────────────────────────────────────────────────
 # Source: Shared Drive (separate SSP and MONO roots)
-SHARED_DRIVE = SCRIPT_DIR.parent / "Shared Drive"
+# Accepts --shared-drive <path> CLI arg, or auto-discovers as sibling of script dir,
+# or searches /sessions/*/mnt/ mount points (for scheduled tasks in different sessions).
+import glob as _pathglob
+
+SHARED_DRIVE = None
+# 1. CLI argument
+for i, arg in enumerate(sys.argv):
+    if arg == '--shared-drive' and i + 1 < len(sys.argv):
+        SHARED_DRIVE = Path(sys.argv[i + 1])
+        break
+# 2. Sibling of script dir (interactive session)
+if not SHARED_DRIVE or not SHARED_DRIVE.exists():
+    candidate = SCRIPT_DIR.parent / "Shared Drive"
+    if candidate.exists():
+        SHARED_DRIVE = candidate
+# 3. Search all mount points (scheduled task sessions)
+if not SHARED_DRIVE or not SHARED_DRIVE.exists():
+    for mnt in _pathglob.glob("/sessions/*/mnt/Shared Drive"):
+        if Path(mnt).exists():
+            SHARED_DRIVE = Path(mnt)
+            break
+if not SHARED_DRIVE or not SHARED_DRIVE.exists():
+    print("ERROR: Cannot find 'Shared Drive' folder. Mount it or pass --shared-drive <path>")
+    sys.exit(1)
+
 SSP_BASE  = SHARED_DRIVE / "SSP" / "Daily Sales Report"
 MONO_BASE = SHARED_DRIVE / "MONO" / "Daily Sales Report"
 
