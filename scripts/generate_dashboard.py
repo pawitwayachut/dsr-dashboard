@@ -12,6 +12,7 @@ import struct
 import io
 import calendar as cal_mod
 import zipfile
+import zlib
 from pathlib import Path
 from datetime import datetime, date, timedelta
 
@@ -163,79 +164,77 @@ if _legacy_mono.exists() and _legacy_mono != MONO_BASE:
 SAFE_DIR = Path("/sessions/clever-vigilant-cannon")
 
 def repair_zip_file(filepath):
-    """Repair xlsx files truncated by OneDrive (missing EOCD). Returns repaired path or None."""
+    """Repair xlsx files corrupted by OneDrive (truncated, overlapped entries, garbled XML).
+
+    Strategy: parse raw PK local file headers, decompress each entry, skip any garbled
+    XML entries (common with OneDrive truncation), and rebuild a clean zip using Python's
+    zipfile module (which guarantees no overlapped entries). Returns repaired path or None.
+    """
     with open(filepath, 'rb') as f:
         data = f.read()
-    # Check if already valid
-    try:
-        zipfile.ZipFile(io.BytesIO(data)).close()
-        return None  # already valid
-    except Exception:
-        pass
-    entries = []
+    if not data or len(data) < 30:
+        return None
+    # Find all local file headers
+    offsets = []
     pos = 0
     while True:
         idx = data.find(b'PK\x03\x04', pos)
         if idx == -1: break
-        entries.append(idx)
+        offsets.append(idx)
         pos = idx + 4
-    if not entries: return None
-    output = io.BytesIO()
-    cd_entries = []
-    for offset in entries:
+    if not offsets:
+        return None
+    # Parse each entry: extract filename and raw content
+    parsed = []
+    for offset in offsets:
         if offset + 30 > len(data): break
         sig, ver, flags, method, mtime, mdate, crc32, comp_size, uncomp_size, name_len, extra_len = \
             struct.unpack_from('<4sHHHHHIIIHH', data, offset)
         if sig != b'PK\x03\x04': break
         header_size = 30 + name_len + extra_len
-        filename = data[offset+30:offset+30+name_len]
-        extra = data[offset+30+name_len:offset+30+name_len+extra_len]
+        filename = data[offset+30:offset+30+name_len].decode('utf-8', errors='replace')
         if comp_size == 0 and (flags & 0x08):
             next_pk = data.find(b'PK', offset + header_size + 1)
             if next_pk == -1: next_pk = len(data)
             file_data = data[offset+header_size:next_pk]
             dd_pos = file_data.rfind(b'PK\x07\x08')
             if dd_pos != -1: file_data = file_data[:dd_pos]
-            comp_size = len(file_data)
         else:
             file_data = data[offset+header_size:offset+header_size+comp_size]
-        local_offset = output.tell()
-        output.write(data[offset:offset+30+name_len+extra_len])
-        output.write(file_data)
-        cd_entries.append({
-            'ver': ver, 'flags': flags & ~0x08, 'method': method,
-            'mtime': mtime, 'mdate': mdate, 'crc32': crc32,
-            'comp_size': comp_size, 'uncomp_size': uncomp_size if uncomp_size else comp_size,
-            'name': filename, 'extra': extra, 'offset': local_offset
-        })
-    cd_offset = output.tell()
-    for e in cd_entries:
-        output.write(struct.pack('<4sHHHHHHIIIHHHHHII',
-            b'PK\x01\x02', 20, e['ver'], e['flags'], e['method'],
-            e['mtime'], e['mdate'], e['crc32'], e['comp_size'], e['uncomp_size'],
-            len(e['name']), len(e['extra']), 0, 0, 0, 0x20, e['offset']))
-        output.write(e['name'])
-        output.write(e['extra'])
-    cd_size = output.tell() - cd_offset
-    output.write(struct.pack('<4sHHHHIIH', b'PK\x05\x06', 0, 0,
-        len(cd_entries), len(cd_entries), cd_size, cd_offset, 0))
-    output.seek(0)
-    try:
-        zipfile.ZipFile(output).close()
-    except Exception:
+        # Decompress if deflated
+        raw = None
+        if method == 8:
+            for wbits in [-15, -zlib.MAX_WBITS, 15, zlib.MAX_WBITS]:
+                try:
+                    raw = zlib.decompress(file_data, wbits)
+                    break
+                except Exception:
+                    continue
+        if raw is None:
+            raw = file_data
+        parsed.append((filename, raw))
+    if not parsed:
         return None
-    repaired_path = SCRIPT_DIR / f".repaired_{filepath.stem}.xlsx"
-    output.seek(0)
-    with open(repaired_path, 'wb') as f:
-        f.write(output.read())
-    # Validate repaired file can actually be opened by openpyxl
+    # Rebuild clean zip — skip garbled XML entries and duplicates
+    repaired_path = WORK_DIR / f".repaired_{filepath.stem}.xlsx"
+    seen = set()
+    with zipfile.ZipFile(repaired_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for name, raw_content in parsed:
+            if name in seen:
+                continue
+            seen.add(name)
+            # Skip XML entries that aren't valid XML (garbled by truncation)
+            if name.endswith('.xml') and raw_content and not raw_content.lstrip()[:1] == b'<':
+                continue
+            zf.writestr(name, raw_content)
+    # Validate the repaired file with openpyxl
     try:
         wb = openpyxl.load_workbook(repaired_path, data_only=True, read_only=True)
         wb.close()
     except Exception:
         repaired_path.unlink(missing_ok=True)
         return None
-    print(f"  Repaired truncated file: {filepath.name} → {repaired_path}")
+    print(f"  Repaired: {filepath.name}")
     return repaired_path
 
 def validate_xlsx(path):
