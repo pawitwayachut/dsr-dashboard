@@ -53,6 +53,27 @@ if not SHARED_DRIVE or not SHARED_DRIVE.exists():
 SSP_BASE  = SHARED_DRIVE / "SSP" / "Daily Sales Report"
 MONO_BASE = SHARED_DRIVE / "MONO" / "Daily Sales Report"
 
+# ── Fallback: if Shared Drive symlinks are broken (e.g. stale session pointer),
+#    try the local OPR - Daily Sales Report folder next to this script.
+def _is_accessible(p):
+    try:
+        list(p.iterdir())
+        return True
+    except (PermissionError, OSError):
+        return False
+
+if not _is_accessible(SSP_BASE):
+    local_ssp = SCRIPT_DIR / "OPR - Daily Sales Report" / "SSP"
+    if _is_accessible(local_ssp):
+        print(f"  INFO: Shared Drive SSP symlink broken — falling back to {local_ssp}")
+        SSP_BASE = local_ssp
+
+if not _is_accessible(MONO_BASE):
+    local_mono = SCRIPT_DIR / "OPR - Daily Sales Report" / "MONO"
+    if _is_accessible(local_mono):
+        print(f"  INFO: Shared Drive MONO symlink broken — falling back to {local_mono}")
+        MONO_BASE = local_mono
+
 THAI_DOW   = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.']
 THAI_HOLIDAYS = {
     # 2026 Thai public holidays + substitution days
