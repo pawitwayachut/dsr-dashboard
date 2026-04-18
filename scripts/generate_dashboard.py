@@ -274,7 +274,10 @@ print()
 
 def safe(val, default=0):
     if val is None: return default
-    if isinstance(val, str) and (val.startswith('#') or val == ''): return default
+    if isinstance(val, str):
+        if val.startswith('#') or val == '': return default
+        try: return float(val.replace(',', ''))
+        except (ValueError, AttributeError): return default
     return val
 
 def fmt_m(n):
@@ -586,8 +589,8 @@ def parse_mono(filepath):
         mtd_ty = mtd_ly = 0.0
         for col, dt in day_cols:
             if latest_col is not None and col > latest_col: break
-            if row[col+1]: mtd_ty += row[col+1]
-            if row[col]:   mtd_ly += row[col]
+            if row[col+1]: mtd_ty += safe(row[col+1])
+            if row[col]:   mtd_ly += safe(row[col])
         mtd_pct = (mtd_ty/mtd_ly - 1) if mtd_ly else None
         stores.append({
             'brand': str(brand), 'name': str(store_name),
