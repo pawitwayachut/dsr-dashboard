@@ -25,54 +25,9 @@ OUTPUT_FILE = SCRIPT_DIR / f"DSR_Dashboard_{month_label}.html"
 
 # ─── DATA SOURCE PATHS ───────────────────────────────────────────────────────
 # Source: Shared Drive (separate SSP and MONO roots)
-# Accepts --shared-drive <path> CLI arg, or auto-discovers as sibling of script dir,
-# or searches /sessions/*/mnt/ mount points (for scheduled tasks in different sessions).
-import glob as _pathglob
-
-SHARED_DRIVE = None
-# 1. CLI argument
-for i, arg in enumerate(sys.argv):
-    if arg == '--shared-drive' and i + 1 < len(sys.argv):
-        SHARED_DRIVE = Path(sys.argv[i + 1])
-        break
-# 2. Sibling of script dir (interactive session)
-if not SHARED_DRIVE or not SHARED_DRIVE.exists():
-    candidate = SCRIPT_DIR.parent / "Shared Drive"
-    if candidate.exists():
-        SHARED_DRIVE = candidate
-# 3. Search all mount points (scheduled task sessions)
-if not SHARED_DRIVE or not SHARED_DRIVE.exists():
-    for mnt in _pathglob.glob("/sessions/*/mnt/Shared Drive"):
-        if Path(mnt).exists():
-            SHARED_DRIVE = Path(mnt)
-            break
-if not SHARED_DRIVE or not SHARED_DRIVE.exists():
-    print("ERROR: Cannot find 'Shared Drive' folder. Mount it or pass --shared-drive <path>")
-    sys.exit(1)
-
+SHARED_DRIVE = SCRIPT_DIR.parent / "Shared Drive"
 SSP_BASE  = SHARED_DRIVE / "SSP" / "Daily Sales Report"
 MONO_BASE = SHARED_DRIVE / "MONO" / "Daily Sales Report"
-
-# ── Fallback: if Shared Drive symlinks are broken (e.g. stale session pointer),
-#    try the local OPR - Daily Sales Report folder next to this script.
-def _is_accessible(p):
-    try:
-        list(p.iterdir())
-        return True
-    except (PermissionError, OSError):
-        return False
-
-if not _is_accessible(SSP_BASE):
-    local_ssp = SCRIPT_DIR / "OPR - Daily Sales Report" / "SSP"
-    if _is_accessible(local_ssp):
-        print(f"  INFO: Shared Drive SSP symlink broken — falling back to {local_ssp}")
-        SSP_BASE = local_ssp
-
-if not _is_accessible(MONO_BASE):
-    local_mono = SCRIPT_DIR / "OPR - Daily Sales Report" / "MONO"
-    if _is_accessible(local_mono):
-        print(f"  INFO: Shared Drive MONO symlink broken — falling back to {local_mono}")
-        MONO_BASE = local_mono
 
 THAI_DOW   = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.']
 THAI_HOLIDAYS = {
@@ -288,13 +243,7 @@ print()
 
 def safe(val, default=0):
     if val is None: return default
-    if isinstance(val, str):
-        if val.startswith('#') or val.strip() == '': return default
-        # Try to coerce string to number
-        try:
-            return float(val.replace(',', ''))
-        except (ValueError, AttributeError):
-            return default
+    if isinstance(val, str) and (val.startswith('#') or val == ''): return default
     return val
 
 def fmt_m(n):
@@ -606,14 +555,8 @@ def parse_mono(filepath):
         mtd_ty = mtd_ly = 0.0
         for col, dt in day_cols:
             if latest_col is not None and col > latest_col: break
-            v_ty = safe(row[col+1], 0)
-            v_ly = safe(row[col], 0)
-            try:
-                if v_ty: mtd_ty += float(v_ty)
-            except (TypeError, ValueError): pass
-            try:
-                if v_ly: mtd_ly += float(v_ly)
-            except (TypeError, ValueError): pass
+            if row[col+1]: mtd_ty += row[col+1]
+            if row[col]:   mtd_ly += row[col]
         mtd_pct = (mtd_ty/mtd_ly - 1) if mtd_ly else None
         stores.append({
             'brand': str(brand), 'name': str(store_name),
