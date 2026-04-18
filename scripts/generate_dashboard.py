@@ -28,16 +28,35 @@ OUTPUT_FILE = SCRIPT_DIR / f"DSR_Dashboard_{month_label}.html"
 # Uses a fallback chain so broken symlinks in scheduled sessions don't crash the run.
 
 def _resolve_base(candidates):
-    """Return the first candidate path that exists, is a real directory, and is listable.
-    Catches PermissionError / OSError from broken OneDrive symlinks."""
+    """Return the candidate path whose YYYYMM subfolder contains the most recently modified xlsx.
+    Falls back to first accessible path if no files found. Catches broken symlinks / PermissionError."""
+    import os
+    best_path  = None
+    best_mtime = 0
     for p in candidates:
         try:
             path = Path(p)
-            if path.exists() and path.is_dir():
-                list(path.iterdir())  # force real filesystem hit — exposes broken symlinks
-                return path
+            if not (path.exists() and path.is_dir()):
+                continue
+            entries = list(path.iterdir())  # exposes broken symlinks
+            # find the latest YYYYMM subfolder
+            subfolders = sorted([d for d in entries if d.is_dir() and d.name.isdigit() and len(d.name) == 6])
+            if not subfolders:
+                continue
+            latest = subfolders[-1]
+            # get newest xlsx mtime in that folder
+            xlsx_mtimes = [os.path.getmtime(f) for f in latest.glob("*.xlsx")]
+            if not xlsx_mtimes:
+                continue
+            newest = max(xlsx_mtimes)
+            print(f"  Candidate {path}: newest xlsx {datetime.fromtimestamp(newest).strftime('%Y-%m-%d %H:%M')}")
+            if newest > best_mtime:
+                best_mtime = newest
+                best_path  = path
         except (OSError, PermissionError):
             continue
+    if best_path:
+        return best_path
     raise FileNotFoundError(f"No accessible data path found. Tried: {[str(c) for c in candidates]}")
 
 _mnt = SCRIPT_DIR.parent  # /sessions/<id>/mnt  (when script lives in OPR DSR Dashboard/)
