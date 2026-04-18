@@ -24,10 +24,38 @@ month_label = now.strftime("%b%Y")
 OUTPUT_FILE = SCRIPT_DIR / f"DSR_Dashboard_{month_label}.html"
 
 # ─── DATA SOURCE PATHS ───────────────────────────────────────────────────────
-# Source: Shared Drive (separate SSP and MONO roots)
-SHARED_DRIVE = SCRIPT_DIR.parent / "Shared Drive"
-SSP_BASE  = SHARED_DRIVE / "SSP" / "Daily Sales Report"
-MONO_BASE = SHARED_DRIVE / "MONO" / "Daily Sales Report"
+# Source: Shared Drive (separate SSP and MONO roots).
+# Uses a fallback chain so broken symlinks in scheduled sessions don't crash the run.
+
+def _resolve_base(candidates):
+    """Return the first candidate path that exists, is a real directory, and is listable.
+    Catches PermissionError / OSError from broken OneDrive symlinks."""
+    for p in candidates:
+        try:
+            path = Path(p)
+            if path.exists() and path.is_dir():
+                list(path.iterdir())  # force real filesystem hit — exposes broken symlinks
+                return path
+        except (OSError, PermissionError):
+            continue
+    raise FileNotFoundError(f"No accessible data path found. Tried: {[str(c) for c in candidates]}")
+
+_mnt = SCRIPT_DIR.parent  # /sessions/<id>/mnt  (when script lives in OPR DSR Dashboard/)
+
+SSP_BASE = _resolve_base([
+    _mnt / "Shared Drive" / "SSP" / "Daily Sales Report",
+    _mnt / "OPR DSR Dashboard" / "OPR - Daily Sales Report" / "SSP",
+    SCRIPT_DIR / "OPR - Daily Sales Report" / "SSP",
+])
+
+MONO_BASE = _resolve_base([
+    _mnt / "Shared Drive" / "MONO" / "Daily Sales Report",
+    _mnt / "OPR DSR Dashboard" / "OPR - Daily Sales Report" / "MONO",
+    SCRIPT_DIR / "OPR - Daily Sales Report" / "MONO",
+])
+
+print(f"SSP source : {SSP_BASE}")
+print(f"MONO source: {MONO_BASE}")
 
 THAI_DOW   = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.']
 THAI_HOLIDAYS = {
@@ -85,10 +113,13 @@ def is_holiday_or_weekend(dt_obj):
 # ─── FILE DISCOVERY ───────────────────────────────────────────────────────────
 
 def find_latest_folder(base_path):
-    folders = sorted([
-        d for d in Path(base_path).iterdir()
-        if d.is_dir() and d.name.isdigit() and len(d.name) == 6
-    ])
+    try:
+        folders = sorted([
+            d for d in Path(base_path).iterdir()
+            if d.is_dir() and d.name.isdigit() and len(d.name) == 6
+        ])
+    except (OSError, PermissionError) as e:
+        raise FileNotFoundError(f"Cannot list {base_path}: {e}")
     if not folders:
         raise FileNotFoundError(f"No YYYYMM folders found in {base_path}")
     return folders[-1]
