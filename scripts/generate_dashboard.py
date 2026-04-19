@@ -1532,6 +1532,36 @@ print(f"  Data as of: {data_day_label}")
 print(f"  SSP Daily: {fmt_m(ssp_daily)} | MTD: {fmt_m(ssp_mtd)} | Runrate: {fmt_m(runrate)}")
 print(f"  BKK MTD: {fmt_m(bkk_mtd)} | UPC MTD: {fmt_m(upc_mtd)} | MONO MTD: {fmt_m(mono_mtd)}")
 
+# ── Refresh local fallback cache ──
+# Copy the staged source files back to OPR - Daily Sales Report so the
+# scheduled task (which cannot access Shared Drive) always has a fresh copy.
+def _refresh_local_fallback():
+    import shutil as _shutil
+    folder_name = now.strftime("%Y%m")
+    base = Path(__file__).parent / "OPR - Daily Sales Report"
+    dst_ssp  = base / "SSP"  / folder_name
+    dst_mono = base / "MONO" / folder_name
+    dst_ssp.mkdir(parents=True, exist_ok=True)
+    dst_mono.mkdir(parents=True, exist_ok=True)
+    copied = 0
+    for src_file in WORK_DIR.iterdir():
+        if not src_file.suffix == '.xlsx':
+            continue
+        name = src_file.name
+        if 'Daily Analyst' in name:
+            dst = dst_mono / name
+        else:
+            dst = dst_ssp / name
+        try:
+            _shutil.copy2(src_file, dst)
+            copied += 1
+        except Exception as e:
+            print(f"  Fallback cache: could not copy {name}: {e}")
+    if copied:
+        print(f"  Local fallback refreshed: {copied} file(s) → OPR - Daily Sales Report/")
+
+_refresh_local_fallback()
+
 # ── Cleanup temp files (only /tmp — avoid workspace deletes that need permission) ──
 import tempfile, glob as _glob, os as _os
 tmp_dir = tempfile.gettempdir()
