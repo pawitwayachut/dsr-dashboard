@@ -63,13 +63,11 @@ _mnt = SCRIPT_DIR.parent  # /sessions/<id>/mnt  (when script lives in OPR DSR Da
 
 SSP_BASE = _resolve_base([
     _mnt / "Shared Drive" / "SSP" / "Daily Sales Report",
-    _mnt / "OPR DSR Dashboard" / "OPR - Daily Sales Report" / "SSP",
     SCRIPT_DIR / "OPR - Daily Sales Report" / "SSP",
 ])
 
 MONO_BASE = _resolve_base([
     _mnt / "Shared Drive" / "MONO" / "Daily Sales Report",
-    _mnt / "OPR DSR Dashboard" / "OPR - Daily Sales Report" / "MONO",
     SCRIPT_DIR / "OPR - Daily Sales Report" / "MONO",
 ])
 
@@ -627,6 +625,19 @@ bkk_stores, bkk_dms, bkk_day = parse_ssp(bkk_path, 'BKK')
 
 print("Parsing UPC stores...")
 upc_stores, upc_dms, upc_day = parse_ssp(upc_path, 'UPC')
+
+# ─── DATA FRESHNESS GUARD ────────────────────────────────────────────────────
+# Abort if the source files don't have today's data.
+# This prevents stale dashboards when the FUSE mount is serving a cached version.
+_today_day = now.day
+_latest_day = bkk_day or upc_day
+if _latest_day != _today_day:
+    print(f"\n⚠️  ABORTED — source files are stale.")
+    print(f"   Today is day {_today_day} ({now.strftime('%d %b %Y')})")
+    print(f"   Latest data in files is day {_latest_day}")
+    print(f"   Dashboard NOT updated. Start a fresh Cowork session and try again.")
+    import sys; sys.exit(1)
+print(f"  Data freshness OK: day {_latest_day} matches today ({now.strftime('%d %b %Y')})")
 
 print("Parsing daily history BKK...")
 bkk_hist, bkk_ly_dates = parse_daily_history(bkk_path)
@@ -1283,6 +1294,10 @@ html = f"""<!DOCTYPE html>
   .header h1{{font-size:18px;font-weight:700;color:#002060}}
   .header .meta{{color:#5F615E;font-size:12px;text-align:right;line-height:1.7}}
   .header .meta strong{{color:#002060}}
+  .header-right{{display:flex;align-items:center;gap:16px}}
+  .profile-pill{{display:flex;align-items:center;gap:8px;background:#f0f4ff;border-radius:20px;padding:4px 12px 4px 4px;cursor:default}}
+  .profile-avatar{{width:28px;height:28px;border-radius:50%;background:#002060;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}}
+  .profile-email{{font-size:11px;color:#002060;font-weight:500;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
 
   .kpi-bar{{display:flex;gap:1px;background:#e7e6e6}}
   .kpi-card{{flex:1;background:#ffffff;padding:12px 16px;border-bottom:3px solid transparent}}
@@ -1383,11 +1398,45 @@ html = f"""<!DOCTYPE html>
 
 <div class="header">
   <h1>OPR Daily Sales Report</h1>
-  <div class="meta">
-    <div>Data as of <strong>{data_day_label}</strong></div>
-    <div>Generated {generated_at}</div>
+  <div class="header-right">
+    <div class="meta">
+      <div>Data as of <strong>{data_day_label}</strong></div>
+      <div>Generated {generated_at}</div>
+    </div>
+    <div class="profile-pill" id="profilePill" style="display:none">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+      <div class="profile-email" id="profileEmail">—</div>
+    </div>
   </div>
 </div>
+<script>
+(function(){{
+  function parseJwt(token) {{
+    try {{ return JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }}
+    catch(e) {{ return null; }}
+  }}
+  function getCookie(name) {{
+    var m = document.cookie.match('(?:^|;)\\s*' + name + '=([^;]*)');
+    return m ? decodeURIComponent(m[1]) : null;
+  }}
+  var jwt = getCookie('CF_Authorization');
+  var email = null;
+  if (jwt) {{
+    var payload = parseJwt(jwt);
+    if (payload) email = payload.email || payload.sub || null;
+  }}
+  if (!email) {{
+    var m = (document.cookie + ' ' + document.head.innerHTML).match(/cf-user-email[="]([^";\s]+)/);
+    if (m) email = m[1];
+  }}
+  if (email) {{
+    var initials = email.split('@')[0].slice(0,2).toUpperCase();
+    document.getElementById('profileAvatar').textContent = initials;
+    document.getElementById('profileEmail').textContent = email;
+    document.getElementById('profilePill').style.display = 'flex';
+  }}
+}})();
+</script>
 
 <!-- KPI BAR -->
 <div class="kpi-bar">
@@ -1532,35 +1581,6 @@ print(f"  Data as of: {data_day_label}")
 print(f"  SSP Daily: {fmt_m(ssp_daily)} | MTD: {fmt_m(ssp_mtd)} | Runrate: {fmt_m(runrate)}")
 print(f"  BKK MTD: {fmt_m(bkk_mtd)} | UPC MTD: {fmt_m(upc_mtd)} | MONO MTD: {fmt_m(mono_mtd)}")
 
-# ── Refresh local fallback cache ──
-# Copy the staged source files back to OPR - Daily Sales Report so the
-# scheduled task (which cannot access Shared Drive) always has a fresh copy.
-def _refresh_local_fallback():
-    import shutil as _shutil
-    folder_name = now.strftime("%Y%m")
-    base = Path(__file__).parent / "OPR - Daily Sales Report"
-    dst_ssp  = base / "SSP"  / folder_name
-    dst_mono = base / "MONO" / folder_name
-    dst_ssp.mkdir(parents=True, exist_ok=True)
-    dst_mono.mkdir(parents=True, exist_ok=True)
-    copied = 0
-    for src_file in WORK_DIR.iterdir():
-        if not src_file.suffix == '.xlsx':
-            continue
-        name = src_file.name
-        if 'Daily Analyst' in name:
-            dst = dst_mono / name
-        else:
-            dst = dst_ssp / name
-        try:
-            _shutil.copy2(src_file, dst)
-            copied += 1
-        except Exception as e:
-            print(f"  Fallback cache: could not copy {name}: {e}")
-    if copied:
-        print(f"  Local fallback refreshed: {copied} file(s) → OPR - Daily Sales Report/")
-
-_refresh_local_fallback()
 
 # ── Cleanup temp files (only /tmp — avoid workspace deletes that need permission) ──
 import tempfile, glob as _glob, os as _os
