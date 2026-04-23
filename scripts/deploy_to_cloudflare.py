@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Deploy DSR Dashboard HTML to Cloudflare Pages via GitHub.
+Deploy DSR Dashboard HTML to Cloudflare Pages via wrangler.
 
 Usage:
     python3 deploy_to_cloudflare.py <path-to-dashboard.html>
 
-Pipeline: HTML → GitHub push → Cloudflare Pages auto-deploy → live at dsr-26s.pages.dev
+Pipeline: HTML → wrangler pages deploy → live at dsr-26s.pages.dev
+(GitHub integration is intentionally disconnected — deploys go direct.)
 """
 
 import sys
@@ -13,36 +14,30 @@ import os
 import json
 import subprocess
 import shutil
+import tempfile
 from pathlib import Path
 from datetime import datetime
 
 # ── Configuration ──────────────────────────────────────────────
-GITHUB_REPO = "pawitwayachut/dsr-dashboard"
-GITHUB_BRANCH = "main"
 CLOUDFLARE_URL = "https://dsr-26s.pages.dev"
-DEPLOY_DIR = "/tmp/dsr-deploy"
+PROJECT_NAME = "dsr"
 CONFIG_FILENAME = ".deploy-config.json"
+WRANGLER_INSTALL_DIR = "/tmp/npm-wrangler"
 
 
-def run(cmd, cwd=None, check=True):
-    """Run a shell command and return output."""
+def run(cmd, cwd=None, check=True, env=None):
     result = subprocess.run(
         cmd, shell=True, cwd=cwd,
-        capture_output=True, text=True
+        capture_output=True, text=True, env=env
     )
     if check and result.returncode != 0:
-        print(f"ERROR: {cmd}\n{result.stderr}")
+        print(f"ERROR running: {cmd}")
+        print(result.stderr[-1000:] if result.stderr else "(no stderr)")
         sys.exit(1)
     return result
 
 
-def get_github_token():
-    """Get GitHub token from env var, or fall back to .deploy-config.json."""
-    token = os.environ.get("GITHUB_TOKEN", "")
-    if token:
-        return token
-
-    # Search for config file: script dir, then parent, then cwd
+def load_config():
     search_paths = [
         Path(__file__).parent,
         Path(__file__).parent.parent,
@@ -52,66 +47,95 @@ def get_github_token():
         cfg_path = base / CONFIG_FILENAME
         if cfg_path.exists():
             try:
-                cfg = json.loads(cfg_path.read_text(encoding='utf-8'))
-                token = cfg.get("github_token", "")
-                if token:
-                    print(f"  Using token from {cfg_path}")
-                    return token
+                return json.loads(cfg_path.read_text(encoding='utf-8'))
             except (json.JSONDecodeError, OSError):
                 continue
+    return {}
 
-    print("ERROR: GITHUB_TOKEN not found.")
-    print("Set it with: export GITHUB_TOKEN=ghp_yourtoken")
-    print(f"Or create {CONFIG_FILENAME} with {{\"github_token\": \"...\"}}")
+
+def get_api_token(cfg):
+    token = os.environ.get("CLOUDFLARE_API_TOKEN", "")
+    if token:
+        return token
+    token = cfg.get("cloudflare_api_token", "")
+    if token:
+        return token
+    print("ERROR: CLOUDFLARE_API_TOKEN not found.")
+    print(f"Set it with: export CLOUDFLARE_API_TOKEN=cfut_...")
+    print(f"Or add cloudflare_api_token to {CONFIG_FILENAME}")
     sys.exit(1)
 
 
+def get_account_id(cfg):
+    account_id = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "")
+    if account_id:
+        return account_id
+    return cfg.get("cloudflare_account_id", "")
+
+
+def ensure_wrangler():
+    """Return path to wrangler binary, installing if needed."""
+    # Check if already installed in our temp dir
+    wrangler_bin = Path(WRANGLER_INSTALL_DIR) / "bin" / "wrangler"
+    if wrangler_bin.exists():
+        return str(wrangler_bin)
+
+    # Check system wrangler
+    r = run("which wrangler", check=False)
+    if r.returncode == 0:
+        return r.stdout.strip()
+
+    # Install to temp location
+    print("Installing wrangler (one-time)...")
+    run(f"npm install -g wrangler --prefix {WRANGLER_INSTALL_DIR}")
+    if not wrangler_bin.exists():
+        print("ERROR: wrangler install failed")
+        sys.exit(1)
+    return str(wrangler_bin)
+
+
 def deploy(html_path: str):
-    """Deploy an HTML file to Cloudflare Pages via GitHub."""
+    """Deploy an HTML file to Cloudflare Pages via wrangler."""
     html_file = Path(html_path)
     if not html_file.exists():
         print(f"ERROR: File not found: {html_path}")
         sys.exit(1)
 
-    token = get_github_token()
-    repo_url = f"https://pawitwayachut:{token}@github.com/{GITHUB_REPO}.git"
-    deploy_dir = Path(DEPLOY_DIR)
+    cfg = load_config()
+    api_token = get_api_token(cfg)
+    account_id = get_account_id(cfg)
+    wrangler = ensure_wrangler()
 
-    # Clone or update repo
-    if deploy_dir.exists():
-        print("Updating existing repo...")
-        run("git fetch origin && git reset --hard origin/main", cwd=str(deploy_dir))
-    else:
-        print("Cloning repo...")
-        run(f"git clone {repo_url} {deploy_dir}")
+    # Stage in a temp dir (wrangler deploys a directory, not a single file)
+    deploy_dir = Path(tempfile.mkdtemp(prefix="dsr-deploy-"))
+    try:
+        dest = deploy_dir / "index.html"
+        shutil.copy2(str(html_file), str(dest))
+        print(f"Staging: {html_file.name} → {dest}")
 
-    # Configure git
-    run('git config user.email "pawit.wayachut@gmail.com"', cwd=str(deploy_dir))
-    run('git config user.name "Pawit Wayachut"', cwd=str(deploy_dir))
+        # Build env for wrangler
+        env = os.environ.copy()
+        env["CLOUDFLARE_API_TOKEN"] = api_token
+        if account_id:
+            env["CLOUDFLARE_ACCOUNT_ID"] = account_id
 
-    # Copy HTML as index.html
-    dest = deploy_dir / "index.html"
-    shutil.copy2(str(html_file), str(dest))
-    print(f"Copied {html_file.name} → index.html")
+        today = datetime.now().strftime("%Y-%m-%d")
+        print(f"Deploying to Cloudflare Pages ({PROJECT_NAME})...")
+        r = run(
+            f'{wrangler} pages deploy {deploy_dir} '
+            f'--project-name={PROJECT_NAME} '
+            f'--branch=main '
+            f'--commit-message="DSR dashboard {today}"',
+            env=env
+        )
 
-    # Check if there are changes
-    status = run("git status --porcelain", cwd=str(deploy_dir))
-    if not status.stdout.strip():
-        print("No changes to deploy.")
-        print(f"Live at: {CLOUDFLARE_URL}")
-        return
+        output = r.stdout + r.stderr
+        print(output.strip())
+        print(f"\n✓ Deployed successfully!")
+        print(f"  Live at: {CLOUDFLARE_URL}")
 
-    # Commit and push
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    commit_msg = f"Update DSR dashboard — {timestamp}"
-
-    run("git add index.html", cwd=str(deploy_dir))
-    run(f'git commit -m "{commit_msg}"', cwd=str(deploy_dir))
-    run("git push origin main", cwd=str(deploy_dir))
-
-    print(f"\n✓ Deployed successfully!")
-    print(f"  Live at: {CLOUDFLARE_URL}")
-    print(f"  Commit: {commit_msg}")
+    finally:
+        shutil.rmtree(str(deploy_dir), ignore_errors=True)
 
 
 if __name__ == "__main__":
